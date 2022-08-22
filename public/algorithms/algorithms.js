@@ -1,4 +1,4 @@
-import { _ as __rest, f as featureCollection, p as point, c as clustersKmeans, a as clustersDbscan, S as Supercluster, e as es6, L as Loader } from './vendor.js';
+import { _ as __rest, f as fastDeepEqual, S as Supercluster, L as Loader } from './vendor.js';
 
 /**
  * Copyright 2021 Google LLC
@@ -245,6 +245,33 @@ class GridAlgorithm extends AbstractViewportAlgorithm {
         this.clusters = [];
         this.maxDistance = maxDistance;
         this.gridSize = gridSize;
+        this.state = { zoom: null };
+    }
+    calculate({ markers, map, mapCanvasProjection, }) {
+        const state = { zoom: map.getZoom() };
+        let changed = false;
+        if (this.state.zoom > this.maxZoom && state.zoom > this.maxZoom) ;
+        else {
+            changed = !fastDeepEqual(this.state, state);
+        }
+        this.state = state;
+        if (map.getZoom() >= this.maxZoom) {
+            return {
+                clusters: this.noop({
+                    markers,
+                    map,
+                    mapCanvasProjection,
+                }),
+                changed: changed,
+            };
+        }
+        return {
+            clusters: this.cluster({
+                markers: filterMarkersToPaddedViewport(map, mapCanvasProjection, markers, this.viewportPadding),
+                map,
+                mapCanvasProjection,
+            }),
+        };
     }
     cluster({ markers, map, mapCanvasProjection, }) {
         this.clusters = [];
@@ -325,120 +352,6 @@ class NoopAlgorithm extends AbstractAlgorithm {
  * limitations under the License.
  */
 /**
- * Experimental algorithm using Kmeans.
- *
- * The Grid algorithm does not implement caching and markers may flash as the
- * viewport changes. Instead use {@link SuperClusterAlgorithm}.
- *
- * @see https://www.npmjs.com/package/@turf/clusters-kmeans
- */
-class KmeansAlgorithm extends AbstractViewportAlgorithm {
-    constructor(_a) {
-        var { numberOfClusters } = _a, options = __rest(_a, ["numberOfClusters"]);
-        super(options);
-        this.numberOfClusters = numberOfClusters;
-    }
-    cluster({ markers, map }) {
-        const clusters = [];
-        if (markers.length === 0) {
-            return clusters;
-        }
-        const points = featureCollection(markers.map((marker) => {
-            return point([marker.getPosition().lng(), marker.getPosition().lat()]);
-        }));
-        let numberOfClusters;
-        if (this.numberOfClusters instanceof Function) {
-            numberOfClusters = this.numberOfClusters(markers.length, map.getZoom());
-        }
-        else {
-            numberOfClusters = this.numberOfClusters;
-        }
-        clustersKmeans(points, { numberOfClusters }).features.forEach((point, i) => {
-            if (!clusters[point.properties.cluster]) {
-                clusters[point.properties.cluster] = new Cluster({
-                    position: {
-                        lng: point.properties.centroid[0],
-                        lat: point.properties.centroid[1],
-                    },
-                    markers: [],
-                });
-            }
-            clusters[point.properties.cluster].push(markers[i]);
-        });
-        return clusters;
-    }
-}
-
-/**
- * Copyright 2021 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-const DEFAULT_INTERNAL_DBSCAN_OPTION = {
-    units: "kilometers",
-    mutate: false,
-    minPoints: 1,
-};
-/**
- *
- * **This algorithm is not yet ready for use!**
- *
- * Experimental algorithm using DBScan.
- *
- * The Grid algorithm does not implement caching and markers may flash as the
- * viewport changes. Instead use {@link SuperClusterAlgorithm}.
- *
- * @see https://www.npmjs.com/package/@turf/clusters-dbscan
- */
-class DBScanAlgorithm extends AbstractViewportAlgorithm {
-    constructor(_a) {
-        var { maxDistance = 200, minPoints = DEFAULT_INTERNAL_DBSCAN_OPTION.minPoints } = _a, options = __rest(_a, ["maxDistance", "minPoints"]);
-        super(options);
-        this.maxDistance = maxDistance;
-        this.options = Object.assign(Object.assign({}, DEFAULT_INTERNAL_DBSCAN_OPTION), { minPoints });
-    }
-    cluster({ markers, mapCanvasProjection, }) {
-        const points = featureCollection(markers.map((marker) => {
-            const projectedPoint = mapCanvasProjection.fromLatLngToContainerPixel(marker.getPosition());
-            return point([projectedPoint.x, projectedPoint.y]);
-        }));
-        const grouped = [];
-        clustersDbscan(points, this.maxDistance, this.options).features.forEach((point, i) => {
-            if (!grouped[point.properties.cluster]) {
-                grouped[point.properties.cluster] = [];
-            }
-            grouped[point.properties.cluster].push(markers[i]);
-        });
-        return grouped.map((markers) => new Cluster({ markers }));
-    }
-}
-
-/**
- * Copyright 2021 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
  * A very fast JavaScript algorithm for geospatial point clustering using KD trees.
  *
  * @see https://www.npmjs.com/package/supercluster for more information on options.
@@ -452,7 +365,7 @@ class SuperClusterAlgorithm extends AbstractAlgorithm {
     }
     calculate(input) {
         let changed = false;
-        if (!es6(input.markers, this.markers)) {
+        if (!fastDeepEqual(input.markers, this.markers)) {
             changed = true;
             // TODO use proxy to avoid copy?
             this.markers = [...input.markers];
@@ -475,7 +388,7 @@ class SuperClusterAlgorithm extends AbstractAlgorithm {
         if (!changed) {
             if (this.state.zoom > this.maxZoom && state.zoom > this.maxZoom) ;
             else {
-                changed = changed || !es6(this.state, state);
+                changed = changed || !fastDeepEqual(this.state, state);
             }
         }
         this.state = state;
@@ -12881,18 +12794,6 @@ new Loader(LOADER_OPTIONS).load().then(() => {
             document.getElementById("grid"),
             new GridAlgorithm({ maxDistance: 40000 }),
             `new GridAlgorithm({})`,
-        ],
-        [
-            document.getElementById("kmeans"),
-            new KmeansAlgorithm({
-                numberOfClusters: 10,
-            }),
-            `new KmeansAlgorithm({})`,
-        ],
-        [
-            document.getElementById("dbscan"),
-            new DBScanAlgorithm({}),
-            `new DBScanAlgorithm({})`,
         ],
         [
             document.getElementById("supercluster"),

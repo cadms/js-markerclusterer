@@ -1,8 +1,5 @@
-import { featureCollection, point } from '@turf/helpers';
-import clustersKmeans from '@turf/clusters-kmeans';
-import clustersDbscan from '@turf/clusters-dbscan';
+import equal from 'fast-deep-equal';
 import SuperCluster from 'supercluster';
-import equal from 'fast-deep-equal/es6';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation.
@@ -276,6 +273,33 @@ class GridAlgorithm extends AbstractViewportAlgorithm {
         this.clusters = [];
         this.maxDistance = maxDistance;
         this.gridSize = gridSize;
+        this.state = { zoom: null };
+    }
+    calculate({ markers, map, mapCanvasProjection, }) {
+        const state = { zoom: map.getZoom() };
+        let changed = false;
+        if (this.state.zoom > this.maxZoom && state.zoom > this.maxZoom) ;
+        else {
+            changed = !equal(this.state, state);
+        }
+        this.state = state;
+        if (map.getZoom() >= this.maxZoom) {
+            return {
+                clusters: this.noop({
+                    markers,
+                    map,
+                    mapCanvasProjection,
+                }),
+                changed: changed,
+            };
+        }
+        return {
+            clusters: this.cluster({
+                markers: filterMarkersToPaddedViewport(map, mapCanvasProjection, markers, this.viewportPadding),
+                map,
+                mapCanvasProjection,
+            }),
+        };
     }
     cluster({ markers, map, mapCanvasProjection, }) {
         this.clusters = [];
@@ -337,120 +361,6 @@ class NoopAlgorithm extends AbstractAlgorithm {
     }
     cluster(input) {
         return this.noop(input);
-    }
-}
-
-/**
- * Copyright 2021 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-/**
- * Experimental algorithm using Kmeans.
- *
- * The Grid algorithm does not implement caching and markers may flash as the
- * viewport changes. Instead use {@link SuperClusterAlgorithm}.
- *
- * @see https://www.npmjs.com/package/@turf/clusters-kmeans
- */
-class KmeansAlgorithm extends AbstractViewportAlgorithm {
-    constructor(_a) {
-        var { numberOfClusters } = _a, options = __rest(_a, ["numberOfClusters"]);
-        super(options);
-        this.numberOfClusters = numberOfClusters;
-    }
-    cluster({ markers, map }) {
-        const clusters = [];
-        if (markers.length === 0) {
-            return clusters;
-        }
-        const points = featureCollection(markers.map((marker) => {
-            return point([marker.getPosition().lng(), marker.getPosition().lat()]);
-        }));
-        let numberOfClusters;
-        if (this.numberOfClusters instanceof Function) {
-            numberOfClusters = this.numberOfClusters(markers.length, map.getZoom());
-        }
-        else {
-            numberOfClusters = this.numberOfClusters;
-        }
-        clustersKmeans(points, { numberOfClusters }).features.forEach((point, i) => {
-            if (!clusters[point.properties.cluster]) {
-                clusters[point.properties.cluster] = new Cluster({
-                    position: {
-                        lng: point.properties.centroid[0],
-                        lat: point.properties.centroid[1],
-                    },
-                    markers: [],
-                });
-            }
-            clusters[point.properties.cluster].push(markers[i]);
-        });
-        return clusters;
-    }
-}
-
-/**
- * Copyright 2021 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-const DEFAULT_INTERNAL_DBSCAN_OPTION = {
-    units: "kilometers",
-    mutate: false,
-    minPoints: 1,
-};
-/**
- *
- * **This algorithm is not yet ready for use!**
- *
- * Experimental algorithm using DBScan.
- *
- * The Grid algorithm does not implement caching and markers may flash as the
- * viewport changes. Instead use {@link SuperClusterAlgorithm}.
- *
- * @see https://www.npmjs.com/package/@turf/clusters-dbscan
- */
-class DBScanAlgorithm extends AbstractViewportAlgorithm {
-    constructor(_a) {
-        var { maxDistance = 200, minPoints = DEFAULT_INTERNAL_DBSCAN_OPTION.minPoints } = _a, options = __rest(_a, ["maxDistance", "minPoints"]);
-        super(options);
-        this.maxDistance = maxDistance;
-        this.options = Object.assign(Object.assign({}, DEFAULT_INTERNAL_DBSCAN_OPTION), { minPoints });
-    }
-    cluster({ markers, mapCanvasProjection, }) {
-        const points = featureCollection(markers.map((marker) => {
-            const projectedPoint = mapCanvasProjection.fromLatLngToContainerPixel(marker.getPosition());
-            return point([projectedPoint.x, projectedPoint.y]);
-        }));
-        const grouped = [];
-        clustersDbscan(points, this.maxDistance, this.options).features.forEach((point, i) => {
-            if (!grouped[point.properties.cluster]) {
-                grouped[point.properties.cluster] = [];
-            }
-            grouped[point.properties.cluster].push(markers[i]);
-        });
-        return grouped.map((markers) => new Cluster({ markers }));
     }
 }
 
@@ -832,5 +742,5 @@ class MarkerClusterer extends OverlayViewSafe {
     }
 }
 
-export { AbstractAlgorithm, AbstractViewportAlgorithm, Cluster, ClusterStats, DBScanAlgorithm, DefaultRenderer, GridAlgorithm, KmeansAlgorithm, MarkerClusterer, MarkerClustererEvents, NoopAlgorithm, SuperClusterAlgorithm, defaultOnClusterClickHandler, distanceBetweenPoints, extendBoundsToPaddedViewport, extendPixelBounds, filterMarkersToPaddedViewport, noop, pixelBoundsToLatLngBounds };
+export { AbstractAlgorithm, AbstractViewportAlgorithm, Cluster, ClusterStats, DefaultRenderer, GridAlgorithm, MarkerClusterer, MarkerClustererEvents, NoopAlgorithm, SuperClusterAlgorithm, defaultOnClusterClickHandler, distanceBetweenPoints, extendBoundsToPaddedViewport, extendPixelBounds, filterMarkersToPaddedViewport, noop, pixelBoundsToLatLngBounds };
 //# sourceMappingURL=index.esm.js.map

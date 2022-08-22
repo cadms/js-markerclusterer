@@ -2,7 +2,7 @@
 
 
 
-var fastDeepEqual = function equal(a, b) {
+var fastDeepEqual$1 = function equal(a, b) {
   if (a === b) return true;
 
   if (a && b && typeof a == 'object' && typeof b == 'object') {
@@ -98,26 +98,27 @@ class Loader {
      * const loader = Loader({apiKey, version: 'weekly', libraries: ['places']});
      * ```
      */
-    constructor({ apiKey, channel, client, id = DEFAULT_ID, libraries = [], language, region, version, mapIds, nonce, retries = 3, url = "https://maps.googleapis.com/maps/api/js", }) {
+    constructor({ apiKey, authReferrerPolicy, channel, client, id = DEFAULT_ID, language, libraries = [], mapIds, nonce, region, retries = 3, url = "https://maps.googleapis.com/maps/api/js", version, }) {
         this.CALLBACK = "__googleMapsCallback";
         this.callbacks = [];
         this.done = false;
         this.loading = false;
         this.errors = [];
-        this.version = version;
         this.apiKey = apiKey;
+        this.authReferrerPolicy = authReferrerPolicy;
         this.channel = channel;
         this.client = client;
         this.id = id || DEFAULT_ID; // Do not allow empty string
-        this.libraries = libraries;
         this.language = language;
-        this.region = region;
+        this.libraries = libraries;
         this.mapIds = mapIds;
         this.nonce = nonce;
+        this.region = region;
         this.retries = retries;
         this.url = url;
+        this.version = version;
         if (Loader.instance) {
-            if (!fastDeepEqual(this.options, Loader.instance.options)) {
+            if (!fastDeepEqual$1(this.options, Loader.instance.options)) {
                 throw new Error(`Loader must not be called again with different options. ${JSON.stringify(this.options)} !== ${JSON.stringify(Loader.instance.options)}`);
             }
             return Loader.instance;
@@ -137,6 +138,7 @@ class Loader {
             mapIds: this.mapIds,
             nonce: this.nonce,
             url: this.url,
+            authReferrerPolicy: this.authReferrerPolicy,
         };
     }
     get status() {
@@ -185,6 +187,9 @@ class Loader {
         }
         if (this.mapIds) {
             url += `&map_ids=${this.mapIds.join(",")}`;
+        }
+        if (this.authReferrerPolicy) {
+            url += `&auth_referrer_policy=${this.authReferrerPolicy}`;
         }
         return url;
     }
@@ -339,203 +344,248 @@ function __rest(s, e) {
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
+// do not edit .js files directly - edit src/index.jst
+
+
+
+var fastDeepEqual = function equal(a, b) {
+  if (a === b) return true;
+
+  if (a && b && typeof a == 'object' && typeof b == 'object') {
+    if (a.constructor !== b.constructor) return false;
+
+    var length, i, keys;
+    if (Array.isArray(a)) {
+      length = a.length;
+      if (length != b.length) return false;
+      for (i = length; i-- !== 0;)
+        if (!equal(a[i], b[i])) return false;
+      return true;
+    }
+
+
+
+    if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+    if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+    if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
+
+    keys = Object.keys(a);
+    length = keys.length;
+    if (length !== Object.keys(b).length) return false;
+
+    for (i = length; i-- !== 0;)
+      if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+
+    for (i = length; i-- !== 0;) {
+      var key = keys[i];
+
+      if (!equal(a[key], b[key])) return false;
+    }
+
+    return true;
+  }
+
+  // true if both NaN, false otherwise
+  return a!==a && b!==b;
+};
+
 var kdbush = {exports: {}};
 
 (function (module, exports) {
-(function (global, factory) {
-module.exports = factory() ;
-}(commonjsGlobal, (function () {
-function sortKD(ids, coords, nodeSize, left, right, depth) {
-    if (right - left <= nodeSize) { return; }
+	(function (global, factory) {
+	module.exports = factory() ;
+	}(commonjsGlobal, (function () {
+	function sortKD(ids, coords, nodeSize, left, right, depth) {
+	    if (right - left <= nodeSize) { return; }
 
-    var m = (left + right) >> 1;
+	    var m = (left + right) >> 1;
 
-    select(ids, coords, m, left, right, depth % 2);
+	    select(ids, coords, m, left, right, depth % 2);
 
-    sortKD(ids, coords, nodeSize, left, m - 1, depth + 1);
-    sortKD(ids, coords, nodeSize, m + 1, right, depth + 1);
-}
+	    sortKD(ids, coords, nodeSize, left, m - 1, depth + 1);
+	    sortKD(ids, coords, nodeSize, m + 1, right, depth + 1);
+	}
 
-function select(ids, coords, k, left, right, inc) {
+	function select(ids, coords, k, left, right, inc) {
 
-    while (right > left) {
-        if (right - left > 600) {
-            var n = right - left + 1;
-            var m = k - left + 1;
-            var z = Math.log(n);
-            var s = 0.5 * Math.exp(2 * z / 3);
-            var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
-            var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
-            var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
-            select(ids, coords, k, newLeft, newRight, inc);
-        }
+	    while (right > left) {
+	        if (right - left > 600) {
+	            var n = right - left + 1;
+	            var m = k - left + 1;
+	            var z = Math.log(n);
+	            var s = 0.5 * Math.exp(2 * z / 3);
+	            var sd = 0.5 * Math.sqrt(z * s * (n - s) / n) * (m - n / 2 < 0 ? -1 : 1);
+	            var newLeft = Math.max(left, Math.floor(k - m * s / n + sd));
+	            var newRight = Math.min(right, Math.floor(k + (n - m) * s / n + sd));
+	            select(ids, coords, k, newLeft, newRight, inc);
+	        }
 
-        var t = coords[2 * k + inc];
-        var i = left;
-        var j = right;
+	        var t = coords[2 * k + inc];
+	        var i = left;
+	        var j = right;
 
-        swapItem(ids, coords, left, k);
-        if (coords[2 * right + inc] > t) { swapItem(ids, coords, left, right); }
+	        swapItem(ids, coords, left, k);
+	        if (coords[2 * right + inc] > t) { swapItem(ids, coords, left, right); }
 
-        while (i < j) {
-            swapItem(ids, coords, i, j);
-            i++;
-            j--;
-            while (coords[2 * i + inc] < t) { i++; }
-            while (coords[2 * j + inc] > t) { j--; }
-        }
+	        while (i < j) {
+	            swapItem(ids, coords, i, j);
+	            i++;
+	            j--;
+	            while (coords[2 * i + inc] < t) { i++; }
+	            while (coords[2 * j + inc] > t) { j--; }
+	        }
 
-        if (coords[2 * left + inc] === t) { swapItem(ids, coords, left, j); }
-        else {
-            j++;
-            swapItem(ids, coords, j, right);
-        }
+	        if (coords[2 * left + inc] === t) { swapItem(ids, coords, left, j); }
+	        else {
+	            j++;
+	            swapItem(ids, coords, j, right);
+	        }
 
-        if (j <= k) { left = j + 1; }
-        if (k <= j) { right = j - 1; }
-    }
-}
+	        if (j <= k) { left = j + 1; }
+	        if (k <= j) { right = j - 1; }
+	    }
+	}
 
-function swapItem(ids, coords, i, j) {
-    swap(ids, i, j);
-    swap(coords, 2 * i, 2 * j);
-    swap(coords, 2 * i + 1, 2 * j + 1);
-}
+	function swapItem(ids, coords, i, j) {
+	    swap(ids, i, j);
+	    swap(coords, 2 * i, 2 * j);
+	    swap(coords, 2 * i + 1, 2 * j + 1);
+	}
 
-function swap(arr, i, j) {
-    var tmp = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
-}
+	function swap(arr, i, j) {
+	    var tmp = arr[i];
+	    arr[i] = arr[j];
+	    arr[j] = tmp;
+	}
 
-function range(ids, coords, minX, minY, maxX, maxY, nodeSize) {
-    var stack = [0, ids.length - 1, 0];
-    var result = [];
-    var x, y;
+	function range(ids, coords, minX, minY, maxX, maxY, nodeSize) {
+	    var stack = [0, ids.length - 1, 0];
+	    var result = [];
+	    var x, y;
 
-    while (stack.length) {
-        var axis = stack.pop();
-        var right = stack.pop();
-        var left = stack.pop();
+	    while (stack.length) {
+	        var axis = stack.pop();
+	        var right = stack.pop();
+	        var left = stack.pop();
 
-        if (right - left <= nodeSize) {
-            for (var i = left; i <= right; i++) {
-                x = coords[2 * i];
-                y = coords[2 * i + 1];
-                if (x >= minX && x <= maxX && y >= minY && y <= maxY) { result.push(ids[i]); }
-            }
-            continue;
-        }
+	        if (right - left <= nodeSize) {
+	            for (var i = left; i <= right; i++) {
+	                x = coords[2 * i];
+	                y = coords[2 * i + 1];
+	                if (x >= minX && x <= maxX && y >= minY && y <= maxY) { result.push(ids[i]); }
+	            }
+	            continue;
+	        }
 
-        var m = Math.floor((left + right) / 2);
+	        var m = Math.floor((left + right) / 2);
 
-        x = coords[2 * m];
-        y = coords[2 * m + 1];
+	        x = coords[2 * m];
+	        y = coords[2 * m + 1];
 
-        if (x >= minX && x <= maxX && y >= minY && y <= maxY) { result.push(ids[m]); }
+	        if (x >= minX && x <= maxX && y >= minY && y <= maxY) { result.push(ids[m]); }
 
-        var nextAxis = (axis + 1) % 2;
+	        var nextAxis = (axis + 1) % 2;
 
-        if (axis === 0 ? minX <= x : minY <= y) {
-            stack.push(left);
-            stack.push(m - 1);
-            stack.push(nextAxis);
-        }
-        if (axis === 0 ? maxX >= x : maxY >= y) {
-            stack.push(m + 1);
-            stack.push(right);
-            stack.push(nextAxis);
-        }
-    }
+	        if (axis === 0 ? minX <= x : minY <= y) {
+	            stack.push(left);
+	            stack.push(m - 1);
+	            stack.push(nextAxis);
+	        }
+	        if (axis === 0 ? maxX >= x : maxY >= y) {
+	            stack.push(m + 1);
+	            stack.push(right);
+	            stack.push(nextAxis);
+	        }
+	    }
 
-    return result;
-}
+	    return result;
+	}
 
-function within(ids, coords, qx, qy, r, nodeSize) {
-    var stack = [0, ids.length - 1, 0];
-    var result = [];
-    var r2 = r * r;
+	function within(ids, coords, qx, qy, r, nodeSize) {
+	    var stack = [0, ids.length - 1, 0];
+	    var result = [];
+	    var r2 = r * r;
 
-    while (stack.length) {
-        var axis = stack.pop();
-        var right = stack.pop();
-        var left = stack.pop();
+	    while (stack.length) {
+	        var axis = stack.pop();
+	        var right = stack.pop();
+	        var left = stack.pop();
 
-        if (right - left <= nodeSize) {
-            for (var i = left; i <= right; i++) {
-                if (sqDist(coords[2 * i], coords[2 * i + 1], qx, qy) <= r2) { result.push(ids[i]); }
-            }
-            continue;
-        }
+	        if (right - left <= nodeSize) {
+	            for (var i = left; i <= right; i++) {
+	                if (sqDist(coords[2 * i], coords[2 * i + 1], qx, qy) <= r2) { result.push(ids[i]); }
+	            }
+	            continue;
+	        }
 
-        var m = Math.floor((left + right) / 2);
+	        var m = Math.floor((left + right) / 2);
 
-        var x = coords[2 * m];
-        var y = coords[2 * m + 1];
+	        var x = coords[2 * m];
+	        var y = coords[2 * m + 1];
 
-        if (sqDist(x, y, qx, qy) <= r2) { result.push(ids[m]); }
+	        if (sqDist(x, y, qx, qy) <= r2) { result.push(ids[m]); }
 
-        var nextAxis = (axis + 1) % 2;
+	        var nextAxis = (axis + 1) % 2;
 
-        if (axis === 0 ? qx - r <= x : qy - r <= y) {
-            stack.push(left);
-            stack.push(m - 1);
-            stack.push(nextAxis);
-        }
-        if (axis === 0 ? qx + r >= x : qy + r >= y) {
-            stack.push(m + 1);
-            stack.push(right);
-            stack.push(nextAxis);
-        }
-    }
+	        if (axis === 0 ? qx - r <= x : qy - r <= y) {
+	            stack.push(left);
+	            stack.push(m - 1);
+	            stack.push(nextAxis);
+	        }
+	        if (axis === 0 ? qx + r >= x : qy + r >= y) {
+	            stack.push(m + 1);
+	            stack.push(right);
+	            stack.push(nextAxis);
+	        }
+	    }
 
-    return result;
-}
+	    return result;
+	}
 
-function sqDist(ax, ay, bx, by) {
-    var dx = ax - bx;
-    var dy = ay - by;
-    return dx * dx + dy * dy;
-}
+	function sqDist(ax, ay, bx, by) {
+	    var dx = ax - bx;
+	    var dy = ay - by;
+	    return dx * dx + dy * dy;
+	}
 
-var defaultGetX = function (p) { return p[0]; };
-var defaultGetY = function (p) { return p[1]; };
+	var defaultGetX = function (p) { return p[0]; };
+	var defaultGetY = function (p) { return p[1]; };
 
-var KDBush = function KDBush(points, getX, getY, nodeSize, ArrayType) {
-    if ( getX === void 0 ) getX = defaultGetX;
-    if ( getY === void 0 ) getY = defaultGetY;
-    if ( nodeSize === void 0 ) nodeSize = 64;
-    if ( ArrayType === void 0 ) ArrayType = Float64Array;
+	var KDBush = function KDBush(points, getX, getY, nodeSize, ArrayType) {
+	    if ( getX === void 0 ) getX = defaultGetX;
+	    if ( getY === void 0 ) getY = defaultGetY;
+	    if ( nodeSize === void 0 ) nodeSize = 64;
+	    if ( ArrayType === void 0 ) ArrayType = Float64Array;
 
-    this.nodeSize = nodeSize;
-    this.points = points;
+	    this.nodeSize = nodeSize;
+	    this.points = points;
 
-    var IndexArrayType = points.length < 65536 ? Uint16Array : Uint32Array;
+	    var IndexArrayType = points.length < 65536 ? Uint16Array : Uint32Array;
 
-    var ids = this.ids = new IndexArrayType(points.length);
-    var coords = this.coords = new ArrayType(points.length * 2);
+	    var ids = this.ids = new IndexArrayType(points.length);
+	    var coords = this.coords = new ArrayType(points.length * 2);
 
-    for (var i = 0; i < points.length; i++) {
-        ids[i] = i;
-        coords[2 * i] = getX(points[i]);
-        coords[2 * i + 1] = getY(points[i]);
-    }
+	    for (var i = 0; i < points.length; i++) {
+	        ids[i] = i;
+	        coords[2 * i] = getX(points[i]);
+	        coords[2 * i + 1] = getY(points[i]);
+	    }
 
-    sortKD(ids, coords, nodeSize, 0, ids.length - 1, 0);
-};
+	    sortKD(ids, coords, nodeSize, 0, ids.length - 1, 0);
+	};
 
-KDBush.prototype.range = function range$1 (minX, minY, maxX, maxY) {
-    return range(this.ids, this.coords, minX, minY, maxX, maxY, this.nodeSize);
-};
+	KDBush.prototype.range = function range$1 (minX, minY, maxX, maxY) {
+	    return range(this.ids, this.coords, minX, minY, maxX, maxY, this.nodeSize);
+	};
 
-KDBush.prototype.within = function within$1 (x, y, r) {
-    return within(this.ids, this.coords, x, y, r, this.nodeSize);
-};
+	KDBush.prototype.within = function within$1 (x, y, r) {
+	    return within(this.ids, this.coords, x, y, r, this.nodeSize);
+	};
 
-return KDBush;
+	return KDBush;
 
-})));
-}(kdbush));
+	})));
+} (kdbush));
 
 var KDBush = kdbush.exports;
 
@@ -778,7 +828,7 @@ class Supercluster {
     }
 
     _limitZoom(z) {
-        return Math.max(this.options.minZoom, Math.min(+z, this.options.maxZoom + 1));
+        return Math.max(this.options.minZoom, Math.min(Math.floor(+z), this.options.maxZoom + 1));
     }
 
     _cluster(points, zoom) {
@@ -954,69 +1004,4 @@ function getY(p) {
     return p.y;
 }
 
-var es6 = function equal(a, b) {
-  if (a === b) return true;
-
-  if (a && b && typeof a == 'object' && typeof b == 'object') {
-    if (a.constructor !== b.constructor) return false;
-
-    var length, i, keys;
-    if (Array.isArray(a)) {
-      length = a.length;
-      if (length != b.length) return false;
-      for (i = length; i-- !== 0;)
-        if (!equal(a[i], b[i])) return false;
-      return true;
-    }
-
-
-    if ((a instanceof Map) && (b instanceof Map)) {
-      if (a.size !== b.size) return false;
-      for (i of a.entries())
-        if (!b.has(i[0])) return false;
-      for (i of a.entries())
-        if (!equal(i[1], b.get(i[0]))) return false;
-      return true;
-    }
-
-    if ((a instanceof Set) && (b instanceof Set)) {
-      if (a.size !== b.size) return false;
-      for (i of a.entries())
-        if (!b.has(i[0])) return false;
-      return true;
-    }
-
-    if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
-      length = a.length;
-      if (length != b.length) return false;
-      for (i = length; i-- !== 0;)
-        if (a[i] !== b[i]) return false;
-      return true;
-    }
-
-
-    if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
-    if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
-    if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
-
-    keys = Object.keys(a);
-    length = keys.length;
-    if (length !== Object.keys(b).length) return false;
-
-    for (i = length; i-- !== 0;)
-      if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
-
-    for (i = length; i-- !== 0;) {
-      var key = keys[i];
-
-      if (!equal(a[key], b[key])) return false;
-    }
-
-    return true;
-  }
-
-  // true if both NaN, false otherwise
-  return a!==a && b!==b;
-};
-
-export { Loader as L, Supercluster as S, __rest as _, es6 as e };
+export { Loader as L, Supercluster as S, __rest as _, fastDeepEqual as f };

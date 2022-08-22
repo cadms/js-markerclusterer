@@ -181,7 +181,7 @@ var markerClusterer = (function (exports) {
   }; // https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
 
 
-  var global$v = // eslint-disable-next-line es/no-global-this -- safe
+  var global$d = // eslint-disable-next-line es-x/no-global-this -- safe
   check(typeof globalThis == 'object' && globalThis) || check(typeof window == 'object' && window) || // eslint-disable-next-line no-restricted-globals -- safe
   check(typeof self == 'object' && self) || check(typeof commonjsGlobal == 'object' && commonjsGlobal) || // eslint-disable-next-line no-new-func -- fallback
   function () {
@@ -190,7 +190,7 @@ var markerClusterer = (function (exports) {
 
   var objectGetOwnPropertyDescriptor = {};
 
-  var fails$c = function (exec) {
+  var fails$e = function (exec) {
     try {
       return !!exec();
     } catch (error) {
@@ -198,10 +198,10 @@ var markerClusterer = (function (exports) {
     }
   };
 
-  var fails$b = fails$c; // Detect IE8's incomplete defineProperty implementation
+  var fails$d = fails$e; // Detect IE8's incomplete defineProperty implementation
 
-  var descriptors = !fails$b(function () {
-    // eslint-disable-next-line es/no-object-defineproperty -- required for testing
+  var descriptors = !fails$d(function () {
+    // eslint-disable-next-line es-x/no-object-defineproperty -- required for testing
     return Object.defineProperty({}, 1, {
       get: function () {
         return 7;
@@ -209,8 +209,9 @@ var markerClusterer = (function (exports) {
     })[1] != 7;
   });
 
-  var fails$a = fails$c;
-  var functionBindNative = !fails$a(function () {
+  var fails$c = fails$e;
+  var functionBindNative = !fails$c(function () {
+    // eslint-disable-next-line es-x/no-function-prototype-bind -- safe
     var test = function () {
       /* empty */
     }.bind(); // eslint-disable-next-line no-prototype-builtins -- safe
@@ -227,7 +228,7 @@ var markerClusterer = (function (exports) {
 
   var objectPropertyIsEnumerable = {};
 
-  var $propertyIsEnumerable = {}.propertyIsEnumerable; // eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+  var $propertyIsEnumerable = {}.propertyIsEnumerable; // eslint-disable-next-line es-x/no-object-getownpropertydescriptor -- safe
 
   var getOwnPropertyDescriptor$2 = Object.getOwnPropertyDescriptor; // Nashorn ~ JDK8 bug
 
@@ -271,27 +272,25 @@ var markerClusterer = (function (exports) {
     return stringSlice(toString$5(it), 8, -1);
   };
 
-  var global$u = global$v;
   var uncurryThis$h = functionUncurryThis;
-  var fails$9 = fails$c;
+  var fails$b = fails$e;
   var classof$7 = classofRaw$1;
-  var Object$4 = global$u.Object;
+  var $Object$3 = Object;
   var split = uncurryThis$h(''.split); // fallback for non-array-like ES3 and non-enumerable old V8 strings
 
-  var indexedObject = fails$9(function () {
+  var indexedObject = fails$b(function () {
     // throws an error in rhino, see https://github.com/mozilla/rhino/issues/346
     // eslint-disable-next-line no-prototype-builtins -- safe
-    return !Object$4('z').propertyIsEnumerable(0);
+    return !$Object$3('z').propertyIsEnumerable(0);
   }) ? function (it) {
-    return classof$7(it) == 'String' ? split(it, '') : Object$4(it);
-  } : Object$4;
+    return classof$7(it) == 'String' ? split(it, '') : $Object$3(it);
+  } : $Object$3;
 
-  var global$t = global$v;
-  var TypeError$c = global$t.TypeError; // `RequireObjectCoercible` abstract operation
+  var $TypeError$a = TypeError; // `RequireObjectCoercible` abstract operation
   // https://tc39.es/ecma262/#sec-requireobjectcoercible
 
   var requireObjectCoercible$4 = function (it) {
-    if (it == undefined) throw TypeError$c("Can't call method on " + it);
+    if (it == undefined) throw $TypeError$a("Can't call method on " + it);
     return it;
   };
 
@@ -304,25 +303,25 @@ var markerClusterer = (function (exports) {
 
   // https://tc39.es/ecma262/#sec-iscallable
 
-  var isCallable$d = function (argument) {
+  var isCallable$e = function (argument) {
     return typeof argument == 'function';
   };
 
-  var isCallable$c = isCallable$d;
+  var isCallable$d = isCallable$e;
 
   var isObject$8 = function (it) {
-    return typeof it == 'object' ? it !== null : isCallable$c(it);
+    return typeof it == 'object' ? it !== null : isCallable$d(it);
   };
 
-  var global$s = global$v;
-  var isCallable$b = isCallable$d;
+  var global$c = global$d;
+  var isCallable$c = isCallable$e;
 
   var aFunction = function (argument) {
-    return isCallable$b(argument) ? argument : undefined;
+    return isCallable$c(argument) ? argument : undefined;
   };
 
   var getBuiltIn$5 = function (namespace, method) {
-    return arguments.length < 2 ? aFunction(global$s[namespace]) : global$s[namespace] && global$s[namespace][method];
+    return arguments.length < 2 ? aFunction(global$c[namespace]) : global$c[namespace] && global$c[namespace][method];
   };
 
   var uncurryThis$g = functionUncurryThis;
@@ -331,10 +330,10 @@ var markerClusterer = (function (exports) {
   var getBuiltIn$4 = getBuiltIn$5;
   var engineUserAgent = getBuiltIn$4('navigator', 'userAgent') || '';
 
-  var global$r = global$v;
+  var global$b = global$d;
   var userAgent = engineUserAgent;
-  var process = global$r.process;
-  var Deno = global$r.Deno;
+  var process = global$b.process;
+  var Deno = global$b.Deno;
   var versions = process && process.versions || Deno && Deno.version;
   var v8 = versions && versions.v8;
   var match, version;
@@ -359,11 +358,11 @@ var markerClusterer = (function (exports) {
 
   var engineV8Version = version;
 
-  /* eslint-disable es/no-symbol -- required for testing */
+  /* eslint-disable es-x/no-symbol -- required for testing */
   var V8_VERSION$1 = engineV8Version;
-  var fails$8 = fails$c; // eslint-disable-next-line es/no-object-getownpropertysymbols -- required for testing
+  var fails$a = fails$e; // eslint-disable-next-line es-x/no-object-getownpropertysymbols -- required for testing
 
-  var nativeSymbol = !!Object.getOwnPropertySymbols && !fails$8(function () {
+  var nativeSymbol = !!Object.getOwnPropertySymbols && !fails$a(function () {
     var symbol = Symbol(); // Chrome 38 Symbol has incorrect toString conversion
     // `get-own-property-symbols` polyfill symbols converted to object are not Symbol instances
 
@@ -371,42 +370,39 @@ var markerClusterer = (function (exports) {
     !Symbol.sham && V8_VERSION$1 && V8_VERSION$1 < 41;
   });
 
-  /* eslint-disable es/no-symbol -- required for testing */
+  /* eslint-disable es-x/no-symbol -- required for testing */
   var NATIVE_SYMBOL$1 = nativeSymbol;
   var useSymbolAsUid = NATIVE_SYMBOL$1 && !Symbol.sham && typeof Symbol.iterator == 'symbol';
 
-  var global$q = global$v;
   var getBuiltIn$3 = getBuiltIn$5;
-  var isCallable$a = isCallable$d;
+  var isCallable$b = isCallable$e;
   var isPrototypeOf$1 = objectIsPrototypeOf;
   var USE_SYMBOL_AS_UID$1 = useSymbolAsUid;
-  var Object$3 = global$q.Object;
+  var $Object$2 = Object;
   var isSymbol$3 = USE_SYMBOL_AS_UID$1 ? function (it) {
     return typeof it == 'symbol';
   } : function (it) {
     var $Symbol = getBuiltIn$3('Symbol');
-    return isCallable$a($Symbol) && isPrototypeOf$1($Symbol.prototype, Object$3(it));
+    return isCallable$b($Symbol) && isPrototypeOf$1($Symbol.prototype, $Object$2(it));
   };
 
-  var global$p = global$v;
-  var String$4 = global$p.String;
+  var $String$3 = String;
 
-  var tryToString$1 = function (argument) {
+  var tryToString$2 = function (argument) {
     try {
-      return String$4(argument);
+      return $String$3(argument);
     } catch (error) {
       return 'Object';
     }
   };
 
-  var global$o = global$v;
-  var isCallable$9 = isCallable$d;
-  var tryToString = tryToString$1;
-  var TypeError$b = global$o.TypeError; // `Assert: IsCallable(argument) is true`
+  var isCallable$a = isCallable$e;
+  var tryToString$1 = tryToString$2;
+  var $TypeError$9 = TypeError; // `Assert: IsCallable(argument) is true`
 
   var aCallable$3 = function (argument) {
-    if (isCallable$9(argument)) return argument;
-    throw TypeError$b(tryToString(argument) + ' is not a function');
+    if (isCallable$a(argument)) return argument;
+    throw $TypeError$9(tryToString$1(argument) + ' is not a function');
   };
 
   var aCallable$2 = aCallable$3; // `GetMethod` abstract operation
@@ -417,71 +413,70 @@ var markerClusterer = (function (exports) {
     return func == null ? undefined : aCallable$2(func);
   };
 
-  var global$n = global$v;
   var call$4 = functionCall;
-  var isCallable$8 = isCallable$d;
+  var isCallable$9 = isCallable$e;
   var isObject$7 = isObject$8;
-  var TypeError$a = global$n.TypeError; // `OrdinaryToPrimitive` abstract operation
+  var $TypeError$8 = TypeError; // `OrdinaryToPrimitive` abstract operation
   // https://tc39.es/ecma262/#sec-ordinarytoprimitive
 
   var ordinaryToPrimitive$1 = function (input, pref) {
     var fn, val;
-    if (pref === 'string' && isCallable$8(fn = input.toString) && !isObject$7(val = call$4(fn, input))) return val;
-    if (isCallable$8(fn = input.valueOf) && !isObject$7(val = call$4(fn, input))) return val;
-    if (pref !== 'string' && isCallable$8(fn = input.toString) && !isObject$7(val = call$4(fn, input))) return val;
-    throw TypeError$a("Can't convert object to primitive value");
+    if (pref === 'string' && isCallable$9(fn = input.toString) && !isObject$7(val = call$4(fn, input))) return val;
+    if (isCallable$9(fn = input.valueOf) && !isObject$7(val = call$4(fn, input))) return val;
+    if (pref !== 'string' && isCallable$9(fn = input.toString) && !isObject$7(val = call$4(fn, input))) return val;
+    throw $TypeError$8("Can't convert object to primitive value");
   };
 
   var shared$3 = {exports: {}};
 
-  var global$m = global$v; // eslint-disable-next-line es/no-object-defineproperty -- safe
+  var global$a = global$d; // eslint-disable-next-line es-x/no-object-defineproperty -- safe
 
-  var defineProperty$2 = Object.defineProperty;
+  var defineProperty$4 = Object.defineProperty;
 
-  var setGlobal$3 = function (key, value) {
+  var defineGlobalProperty$3 = function (key, value) {
     try {
-      defineProperty$2(global$m, key, {
+      defineProperty$4(global$a, key, {
         value: value,
         configurable: true,
         writable: true
       });
     } catch (error) {
-      global$m[key] = value;
+      global$a[key] = value;
     }
 
     return value;
   };
 
-  var global$l = global$v;
-  var setGlobal$2 = setGlobal$3;
+  var global$9 = global$d;
+  var defineGlobalProperty$2 = defineGlobalProperty$3;
   var SHARED = '__core-js_shared__';
-  var store$3 = global$l[SHARED] || setGlobal$2(SHARED, {});
+  var store$3 = global$9[SHARED] || defineGlobalProperty$2(SHARED, {});
   var sharedStore = store$3;
 
   var store$2 = sharedStore;
   (shared$3.exports = function (key, value) {
     return store$2[key] || (store$2[key] = value !== undefined ? value : {});
   })('versions', []).push({
-    version: '3.21.0',
+    version: '3.24.1',
     mode: 'global',
     copyright: '© 2014-2022 Denis Pushkarev (zloirock.ru)',
-    license: 'https://github.com/zloirock/core-js/blob/v3.21.0/LICENSE',
+    license: 'https://github.com/zloirock/core-js/blob/v3.24.1/LICENSE',
     source: 'https://github.com/zloirock/core-js'
   });
 
-  var global$k = global$v;
   var requireObjectCoercible$2 = requireObjectCoercible$4;
-  var Object$2 = global$k.Object; // `ToObject` abstract operation
+  var $Object$1 = Object; // `ToObject` abstract operation
   // https://tc39.es/ecma262/#sec-toobject
 
   var toObject$5 = function (argument) {
-    return Object$2(requireObjectCoercible$2(argument));
+    return $Object$1(requireObjectCoercible$2(argument));
   };
 
   var uncurryThis$f = functionUncurryThis;
   var toObject$4 = toObject$5;
   var hasOwnProperty = uncurryThis$f({}.hasOwnProperty); // `HasOwnProperty` abstract operation
   // https://tc39.es/ecma262/#sec-hasownproperty
+  // eslint-disable-next-line es-x/no-object-hasown -- safe
 
   var hasOwnProperty_1 = Object.hasOwn || function hasOwn(it, key) {
     return hasOwnProperty(toObject$4(it), key);
@@ -496,14 +491,14 @@ var markerClusterer = (function (exports) {
     return 'Symbol(' + (key === undefined ? '' : key) + ')_' + toString$4(++id + postfix, 36);
   };
 
-  var global$j = global$v;
+  var global$8 = global$d;
   var shared$2 = shared$3.exports;
   var hasOwn$7 = hasOwnProperty_1;
   var uid$1 = uid$2;
   var NATIVE_SYMBOL = nativeSymbol;
   var USE_SYMBOL_AS_UID = useSymbolAsUid;
   var WellKnownSymbolsStore = shared$2('wks');
-  var Symbol$1 = global$j.Symbol;
+  var Symbol$1 = global$8.Symbol;
   var symbolFor = Symbol$1 && Symbol$1['for'];
   var createWellKnownSymbol = USE_SYMBOL_AS_UID ? Symbol$1 : Symbol$1 && Symbol$1.withoutSetter || uid$1;
 
@@ -523,14 +518,13 @@ var markerClusterer = (function (exports) {
     return WellKnownSymbolsStore[name];
   };
 
-  var global$i = global$v;
   var call$3 = functionCall;
   var isObject$6 = isObject$8;
   var isSymbol$2 = isSymbol$3;
   var getMethod = getMethod$1;
   var ordinaryToPrimitive = ordinaryToPrimitive$1;
   var wellKnownSymbol$7 = wellKnownSymbol$8;
-  var TypeError$9 = global$i.TypeError;
+  var $TypeError$7 = TypeError;
   var TO_PRIMITIVE = wellKnownSymbol$7('toPrimitive'); // `ToPrimitive` abstract operation
   // https://tc39.es/ecma262/#sec-toprimitive
 
@@ -543,7 +537,7 @@ var markerClusterer = (function (exports) {
       if (pref === undefined) pref = 'default';
       result = call$3(exoticToPrim, input, pref);
       if (!isObject$6(result) || isSymbol$2(result)) return result;
-      throw TypeError$9("Can't convert object to primitive value");
+      throw $TypeError$7("Can't convert object to primitive value");
     }
 
     if (pref === undefined) pref = 'number';
@@ -559,9 +553,9 @@ var markerClusterer = (function (exports) {
     return isSymbol$1(key) ? key : key + '';
   };
 
-  var global$h = global$v;
+  var global$7 = global$d;
   var isObject$5 = isObject$8;
-  var document$1 = global$h.document; // typeof document.createElement is 'object' in old IE
+  var document$1 = global$7.document; // typeof document.createElement is 'object' in old IE
 
   var EXISTS$1 = isObject$5(document$1) && isObject$5(document$1.createElement);
 
@@ -569,12 +563,12 @@ var markerClusterer = (function (exports) {
     return EXISTS$1 ? document$1.createElement(it) : {};
   };
 
-  var DESCRIPTORS$8 = descriptors;
-  var fails$7 = fails$c;
+  var DESCRIPTORS$9 = descriptors;
+  var fails$9 = fails$e;
   var createElement = documentCreateElement$2; // Thanks to IE8 for its funny defineProperty
 
-  var ie8DomDefine = !DESCRIPTORS$8 && !fails$7(function () {
-    // eslint-disable-next-line es/no-object-defineproperty -- required for testing
+  var ie8DomDefine = !DESCRIPTORS$9 && !fails$9(function () {
+    // eslint-disable-next-line es-x/no-object-defineproperty -- required for testing
     return Object.defineProperty(createElement('div'), 'a', {
       get: function () {
         return 7;
@@ -582,19 +576,19 @@ var markerClusterer = (function (exports) {
     }).a != 7;
   });
 
-  var DESCRIPTORS$7 = descriptors;
+  var DESCRIPTORS$8 = descriptors;
   var call$2 = functionCall;
   var propertyIsEnumerableModule$1 = objectPropertyIsEnumerable;
   var createPropertyDescriptor$2 = createPropertyDescriptor$3;
   var toIndexedObject$3 = toIndexedObject$4;
   var toPropertyKey$2 = toPropertyKey$3;
   var hasOwn$6 = hasOwnProperty_1;
-  var IE8_DOM_DEFINE$1 = ie8DomDefine; // eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+  var IE8_DOM_DEFINE$1 = ie8DomDefine; // eslint-disable-next-line es-x/no-object-getownpropertydescriptor -- safe
 
   var $getOwnPropertyDescriptor$1 = Object.getOwnPropertyDescriptor; // `Object.getOwnPropertyDescriptor` method
   // https://tc39.es/ecma262/#sec-object.getownpropertydescriptor
 
-  objectGetOwnPropertyDescriptor.f = DESCRIPTORS$7 ? $getOwnPropertyDescriptor$1 : function getOwnPropertyDescriptor(O, P) {
+  objectGetOwnPropertyDescriptor.f = DESCRIPTORS$8 ? $getOwnPropertyDescriptor$1 : function getOwnPropertyDescriptor(O, P) {
     O = toIndexedObject$3(O);
     P = toPropertyKey$2(P);
     if (IE8_DOM_DEFINE$1) try {
@@ -607,12 +601,12 @@ var markerClusterer = (function (exports) {
 
   var objectDefineProperty = {};
 
-  var DESCRIPTORS$6 = descriptors;
-  var fails$6 = fails$c; // V8 ~ Chrome 36-
+  var DESCRIPTORS$7 = descriptors;
+  var fails$8 = fails$e; // V8 ~ Chrome 36-
   // https://bugs.chromium.org/p/v8/issues/detail?id=3334
 
-  var v8PrototypeDefineBug = DESCRIPTORS$6 && fails$6(function () {
-    // eslint-disable-next-line es/no-object-defineproperty -- required for testing
+  var v8PrototypeDefineBug = DESCRIPTORS$7 && fails$8(function () {
+    // eslint-disable-next-line es-x/no-object-defineproperty -- required for testing
     return Object.defineProperty(function () {
       /* empty */
     }, 'prototype', {
@@ -621,25 +615,23 @@ var markerClusterer = (function (exports) {
     }).prototype != 42;
   });
 
-  var global$g = global$v;
   var isObject$4 = isObject$8;
-  var String$3 = global$g.String;
-  var TypeError$8 = global$g.TypeError; // `Assert: Type(argument) is Object`
+  var $String$2 = String;
+  var $TypeError$6 = TypeError; // `Assert: Type(argument) is Object`
 
   var anObject$5 = function (argument) {
     if (isObject$4(argument)) return argument;
-    throw TypeError$8(String$3(argument) + ' is not an object');
+    throw $TypeError$6($String$2(argument) + ' is not an object');
   };
 
-  var global$f = global$v;
-  var DESCRIPTORS$5 = descriptors;
+  var DESCRIPTORS$6 = descriptors;
   var IE8_DOM_DEFINE = ie8DomDefine;
   var V8_PROTOTYPE_DEFINE_BUG$1 = v8PrototypeDefineBug;
   var anObject$4 = anObject$5;
   var toPropertyKey$1 = toPropertyKey$3;
-  var TypeError$7 = global$f.TypeError; // eslint-disable-next-line es/no-object-defineproperty -- safe
+  var $TypeError$5 = TypeError; // eslint-disable-next-line es-x/no-object-defineproperty -- safe
 
-  var $defineProperty = Object.defineProperty; // eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+  var $defineProperty = Object.defineProperty; // eslint-disable-next-line es-x/no-object-getownpropertydescriptor -- safe
 
   var $getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
   var ENUMERABLE = 'enumerable';
@@ -647,7 +639,7 @@ var markerClusterer = (function (exports) {
   var WRITABLE = 'writable'; // `Object.defineProperty` method
   // https://tc39.es/ecma262/#sec-object.defineproperty
 
-  objectDefineProperty.f = DESCRIPTORS$5 ? V8_PROTOTYPE_DEFINE_BUG$1 ? function defineProperty(O, P, Attributes) {
+  objectDefineProperty.f = DESCRIPTORS$6 ? V8_PROTOTYPE_DEFINE_BUG$1 ? function defineProperty(O, P, Attributes) {
     anObject$4(O);
     P = toPropertyKey$1(P);
     anObject$4(Attributes);
@@ -675,29 +667,47 @@ var markerClusterer = (function (exports) {
     } catch (error) {
       /* empty */
     }
-    if ('get' in Attributes || 'set' in Attributes) throw TypeError$7('Accessors not supported');
+    if ('get' in Attributes || 'set' in Attributes) throw $TypeError$5('Accessors not supported');
     if ('value' in Attributes) O[P] = Attributes.value;
     return O;
   };
 
-  var DESCRIPTORS$4 = descriptors;
+  var DESCRIPTORS$5 = descriptors;
   var definePropertyModule$4 = objectDefineProperty;
   var createPropertyDescriptor$1 = createPropertyDescriptor$3;
-  var createNonEnumerableProperty$4 = DESCRIPTORS$4 ? function (object, key, value) {
+  var createNonEnumerableProperty$3 = DESCRIPTORS$5 ? function (object, key, value) {
     return definePropertyModule$4.f(object, key, createPropertyDescriptor$1(1, value));
   } : function (object, key, value) {
     object[key] = value;
     return object;
   };
 
-  var redefine$3 = {exports: {}};
+  var makeBuiltIn$2 = {exports: {}};
+
+  var DESCRIPTORS$4 = descriptors;
+  var hasOwn$5 = hasOwnProperty_1;
+  var FunctionPrototype = Function.prototype; // eslint-disable-next-line es-x/no-object-getownpropertydescriptor -- safe
+
+  var getDescriptor = DESCRIPTORS$4 && Object.getOwnPropertyDescriptor;
+  var EXISTS = hasOwn$5(FunctionPrototype, 'name'); // additional protection from minified / mangled / dropped function names
+
+  var PROPER = EXISTS && function something() {
+    /* empty */
+  }.name === 'something';
+
+  var CONFIGURABLE = EXISTS && (!DESCRIPTORS$4 || DESCRIPTORS$4 && getDescriptor(FunctionPrototype, 'name').configurable);
+  var functionName = {
+    EXISTS: EXISTS,
+    PROPER: PROPER,
+    CONFIGURABLE: CONFIGURABLE
+  };
 
   var uncurryThis$d = functionUncurryThis;
-  var isCallable$7 = isCallable$d;
+  var isCallable$8 = isCallable$e;
   var store$1 = sharedStore;
   var functionToString = uncurryThis$d(Function.toString); // this helper broken in `core-js@3.4.1-3.4.4`, so we can't use `shared` helper
 
-  if (!isCallable$7(store$1.inspectSource)) {
+  if (!isCallable$8(store$1.inspectSource)) {
     store$1.inspectSource = function (it) {
       return functionToString(it);
     };
@@ -705,11 +715,11 @@ var markerClusterer = (function (exports) {
 
   var inspectSource$3 = store$1.inspectSource;
 
-  var global$e = global$v;
-  var isCallable$6 = isCallable$d;
+  var global$6 = global$d;
+  var isCallable$7 = isCallable$e;
   var inspectSource$2 = inspectSource$3;
-  var WeakMap$1 = global$e.WeakMap;
-  var nativeWeakMap = isCallable$6(WeakMap$1) && /native code/.test(inspectSource$2(WeakMap$1));
+  var WeakMap$1 = global$6.WeakMap;
+  var nativeWeakMap = isCallable$7(WeakMap$1) && /native code/.test(inspectSource$2(WeakMap$1));
 
   var shared$1 = shared$3.exports;
   var uid = uid$2;
@@ -722,17 +732,17 @@ var markerClusterer = (function (exports) {
   var hiddenKeys$4 = {};
 
   var NATIVE_WEAK_MAP = nativeWeakMap;
-  var global$d = global$v;
+  var global$5 = global$d;
   var uncurryThis$c = functionUncurryThis;
   var isObject$3 = isObject$8;
-  var createNonEnumerableProperty$3 = createNonEnumerableProperty$4;
-  var hasOwn$5 = hasOwnProperty_1;
+  var createNonEnumerableProperty$2 = createNonEnumerableProperty$3;
+  var hasOwn$4 = hasOwnProperty_1;
   var shared = sharedStore;
   var sharedKey$1 = sharedKey$2;
   var hiddenKeys$3 = hiddenKeys$4;
   var OBJECT_ALREADY_INITIALIZED = 'Object already initialized';
-  var TypeError$6 = global$d.TypeError;
-  var WeakMap = global$d.WeakMap;
+  var TypeError$2 = global$5.TypeError;
+  var WeakMap = global$5.WeakMap;
   var set, get, has;
 
   var enforce = function (it) {
@@ -744,7 +754,7 @@ var markerClusterer = (function (exports) {
       var state;
 
       if (!isObject$3(it) || (state = get(it)).type !== TYPE) {
-        throw TypeError$6('Incompatible receiver, ' + TYPE + ' required');
+        throw TypeError$2('Incompatible receiver, ' + TYPE + ' required');
       }
 
       return state;
@@ -758,7 +768,7 @@ var markerClusterer = (function (exports) {
     var wmset = uncurryThis$c(store.set);
 
     set = function (it, metadata) {
-      if (wmhas(store, it)) throw new TypeError$6(OBJECT_ALREADY_INITIALIZED);
+      if (wmhas(store, it)) throw new TypeError$2(OBJECT_ALREADY_INITIALIZED);
       metadata.facade = it;
       wmset(store, it, metadata);
       return metadata;
@@ -776,18 +786,18 @@ var markerClusterer = (function (exports) {
     hiddenKeys$3[STATE] = true;
 
     set = function (it, metadata) {
-      if (hasOwn$5(it, STATE)) throw new TypeError$6(OBJECT_ALREADY_INITIALIZED);
+      if (hasOwn$4(it, STATE)) throw new TypeError$2(OBJECT_ALREADY_INITIALIZED);
       metadata.facade = it;
-      createNonEnumerableProperty$3(it, STATE, metadata);
+      createNonEnumerableProperty$2(it, STATE, metadata);
       return metadata;
     };
 
     get = function (it) {
-      return hasOwn$5(it, STATE) ? it[STATE] : {};
+      return hasOwn$4(it, STATE) ? it[STATE] : {};
     };
 
     has = function (it) {
-      return hasOwn$5(it, STATE);
+      return hasOwn$4(it, STATE);
     };
   }
 
@@ -799,82 +809,122 @@ var markerClusterer = (function (exports) {
     getterFor: getterFor
   };
 
-  var DESCRIPTORS$3 = descriptors;
-  var hasOwn$4 = hasOwnProperty_1;
-  var FunctionPrototype = Function.prototype; // eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
-
-  var getDescriptor = DESCRIPTORS$3 && Object.getOwnPropertyDescriptor;
-  var EXISTS = hasOwn$4(FunctionPrototype, 'name'); // additional protection from minified / mangled / dropped function names
-
-  var PROPER = EXISTS && function something() {
-    /* empty */
-  }.name === 'something';
-
-  var CONFIGURABLE = EXISTS && (!DESCRIPTORS$3 || DESCRIPTORS$3 && getDescriptor(FunctionPrototype, 'name').configurable);
-  var functionName = {
-    EXISTS: EXISTS,
-    PROPER: PROPER,
-    CONFIGURABLE: CONFIGURABLE
-  };
-
-  var global$c = global$v;
-  var isCallable$5 = isCallable$d;
+  var fails$7 = fails$e;
+  var isCallable$6 = isCallable$e;
   var hasOwn$3 = hasOwnProperty_1;
-  var createNonEnumerableProperty$2 = createNonEnumerableProperty$4;
-  var setGlobal$1 = setGlobal$3;
+  var DESCRIPTORS$3 = descriptors;
+  var CONFIGURABLE_FUNCTION_NAME = functionName.CONFIGURABLE;
   var inspectSource$1 = inspectSource$3;
   var InternalStateModule = internalState;
-  var CONFIGURABLE_FUNCTION_NAME = functionName.CONFIGURABLE;
-  var getInternalState = InternalStateModule.get;
   var enforceInternalState = InternalStateModule.enforce;
-  var TEMPLATE = String(String).split('String');
-  (redefine$3.exports = function (O, key, value, options) {
-    var unsafe = options ? !!options.unsafe : false;
-    var simple = options ? !!options.enumerable : false;
-    var noTargetGet = options ? !!options.noTargetGet : false;
-    var name = options && options.name !== undefined ? options.name : key;
-    var state;
+  var getInternalState = InternalStateModule.get; // eslint-disable-next-line es-x/no-object-defineproperty -- safe
 
-    if (isCallable$5(value)) {
-      if (String(name).slice(0, 7) === 'Symbol(') {
-        name = '[' + String(name).replace(/^Symbol\(([^)]*)\)/, '$1') + ']';
-      }
-
-      if (!hasOwn$3(value, 'name') || CONFIGURABLE_FUNCTION_NAME && value.name !== name) {
-        createNonEnumerableProperty$2(value, 'name', name);
-      }
-
-      state = enforceInternalState(value);
-
-      if (!state.source) {
-        state.source = TEMPLATE.join(typeof name == 'string' ? name : '');
-      }
-    }
-
-    if (O === global$c) {
-      if (simple) O[key] = value;else setGlobal$1(key, value);
-      return;
-    } else if (!unsafe) {
-      delete O[key];
-    } else if (!noTargetGet && O[key]) {
-      simple = true;
-    }
-
-    if (simple) O[key] = value;else createNonEnumerableProperty$2(O, key, value); // add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
-  })(Function.prototype, 'toString', function toString() {
-    return isCallable$5(this) && getInternalState(this).source || inspectSource$1(this);
+  var defineProperty$3 = Object.defineProperty;
+  var CONFIGURABLE_LENGTH = DESCRIPTORS$3 && !fails$7(function () {
+    return defineProperty$3(function () {
+      /* empty */
+    }, 'length', {
+      value: 8
+    }).length !== 8;
   });
+  var TEMPLATE = String(String).split('String');
+
+  var makeBuiltIn$1 = makeBuiltIn$2.exports = function (value, name, options) {
+    if (String(name).slice(0, 7) === 'Symbol(') {
+      name = '[' + String(name).replace(/^Symbol\(([^)]*)\)/, '$1') + ']';
+    }
+
+    if (options && options.getter) name = 'get ' + name;
+    if (options && options.setter) name = 'set ' + name;
+
+    if (!hasOwn$3(value, 'name') || CONFIGURABLE_FUNCTION_NAME && value.name !== name) {
+      if (DESCRIPTORS$3) defineProperty$3(value, 'name', {
+        value: name,
+        configurable: true
+      });else value.name = name;
+    }
+
+    if (CONFIGURABLE_LENGTH && options && hasOwn$3(options, 'arity') && value.length !== options.arity) {
+      defineProperty$3(value, 'length', {
+        value: options.arity
+      });
+    }
+
+    try {
+      if (options && hasOwn$3(options, 'constructor') && options.constructor) {
+        if (DESCRIPTORS$3) defineProperty$3(value, 'prototype', {
+          writable: false
+        }); // in V8 ~ Chrome 53, prototypes of some methods, like `Array.prototype.values`, are non-writable
+      } else if (value.prototype) value.prototype = undefined;
+    } catch (error) {
+      /* empty */
+    }
+
+    var state = enforceInternalState(value);
+
+    if (!hasOwn$3(state, 'source')) {
+      state.source = TEMPLATE.join(typeof name == 'string' ? name : '');
+    }
+
+    return value;
+  }; // add fake Function#toString for correct work wrapped methods / constructors with methods like LoDash isNative
+  // eslint-disable-next-line no-extend-native -- required
+
+
+  Function.prototype.toString = makeBuiltIn$1(function toString() {
+    return isCallable$6(this) && getInternalState(this).source || inspectSource$1(this);
+  }, 'toString');
+
+  var isCallable$5 = isCallable$e;
+  var definePropertyModule$3 = objectDefineProperty;
+  var makeBuiltIn = makeBuiltIn$2.exports;
+  var defineGlobalProperty$1 = defineGlobalProperty$3;
+
+  var defineBuiltIn$3 = function (O, key, value, options) {
+    if (!options) options = {};
+    var simple = options.enumerable;
+    var name = options.name !== undefined ? options.name : key;
+    if (isCallable$5(value)) makeBuiltIn(value, name, options);
+
+    if (options.global) {
+      if (simple) O[key] = value;else defineGlobalProperty$1(key, value);
+    } else {
+      try {
+        if (!options.unsafe) delete O[key];else if (O[key]) simple = true;
+      } catch (error) {
+        /* empty */
+      }
+
+      if (simple) O[key] = value;else definePropertyModule$3.f(O, key, {
+        value: value,
+        enumerable: false,
+        configurable: !options.nonConfigurable,
+        writable: !options.nonWritable
+      });
+    }
+
+    return O;
+  };
 
   var objectGetOwnPropertyNames = {};
 
   var ceil = Math.ceil;
-  var floor = Math.floor; // `ToIntegerOrInfinity` abstract operation
+  var floor = Math.floor; // `Math.trunc` method
+  // https://tc39.es/ecma262/#sec-math.trunc
+  // eslint-disable-next-line es-x/no-math-trunc -- safe
+
+  var mathTrunc = Math.trunc || function trunc(x) {
+    var n = +x;
+    return (n > 0 ? floor : ceil)(n);
+  };
+
+  var trunc = mathTrunc; // `ToIntegerOrInfinity` abstract operation
   // https://tc39.es/ecma262/#sec-tointegerorinfinity
 
   var toIntegerOrInfinity$3 = function (argument) {
-    var number = +argument; // eslint-disable-next-line no-self-compare -- safe
+    var number = +argument; // eslint-disable-next-line no-self-compare -- NaN check
 
-    return number !== number || number === 0 ? 0 : (number > 0 ? floor : ceil)(number);
+    return number !== number || number === 0 ? 0 : trunc(number);
   };
 
   var toIntegerOrInfinity$2 = toIntegerOrInfinity$3;
@@ -964,7 +1014,7 @@ var markerClusterer = (function (exports) {
   var enumBugKeys$2 = enumBugKeys$3;
   var hiddenKeys$1 = enumBugKeys$2.concat('length', 'prototype'); // `Object.getOwnPropertyNames` method
   // https://tc39.es/ecma262/#sec-object.getownpropertynames
-  // eslint-disable-next-line es/no-object-getownpropertynames -- safe
+  // eslint-disable-next-line es-x/no-object-getownpropertynames -- safe
 
   objectGetOwnPropertyNames.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O) {
     return internalObjectKeys$1(O, hiddenKeys$1);
@@ -990,11 +1040,11 @@ var markerClusterer = (function (exports) {
   var hasOwn$1 = hasOwnProperty_1;
   var ownKeys = ownKeys$1;
   var getOwnPropertyDescriptorModule = objectGetOwnPropertyDescriptor;
-  var definePropertyModule$3 = objectDefineProperty;
+  var definePropertyModule$2 = objectDefineProperty;
 
   var copyConstructorProperties$1 = function (target, source, exceptions) {
     var keys = ownKeys(source);
-    var defineProperty = definePropertyModule$3.f;
+    var defineProperty = definePropertyModule$2.f;
     var getOwnPropertyDescriptor = getOwnPropertyDescriptorModule.f;
 
     for (var i = 0; i < keys.length; i++) {
@@ -1006,13 +1056,13 @@ var markerClusterer = (function (exports) {
     }
   };
 
-  var fails$5 = fails$c;
-  var isCallable$4 = isCallable$d;
+  var fails$6 = fails$e;
+  var isCallable$4 = isCallable$e;
   var replacement = /#|\.prototype\./;
 
   var isForced$2 = function (feature, detection) {
     var value = data[normalize(feature)];
-    return value == POLYFILL ? true : value == NATIVE ? false : isCallable$4(detection) ? fails$5(detection) : !!detection;
+    return value == POLYFILL ? true : value == NATIVE ? false : isCallable$4(detection) ? fails$6(detection) : !!detection;
   };
 
   var normalize = isForced$2.normalize = function (string) {
@@ -1024,27 +1074,27 @@ var markerClusterer = (function (exports) {
   var POLYFILL = isForced$2.POLYFILL = 'P';
   var isForced_1 = isForced$2;
 
-  var global$b = global$v;
+  var global$4 = global$d;
   var getOwnPropertyDescriptor$1 = objectGetOwnPropertyDescriptor.f;
-  var createNonEnumerableProperty$1 = createNonEnumerableProperty$4;
-  var redefine$2 = redefine$3.exports;
-  var setGlobal = setGlobal$3;
+  var createNonEnumerableProperty$1 = createNonEnumerableProperty$3;
+  var defineBuiltIn$2 = defineBuiltIn$3;
+  var defineGlobalProperty = defineGlobalProperty$3;
   var copyConstructorProperties = copyConstructorProperties$1;
   var isForced$1 = isForced_1;
   /*
-    options.target      - name of the target object
-    options.global      - target is the global object
-    options.stat        - export as static methods of target
-    options.proto       - export as prototype methods of target
-    options.real        - real prototype method for the `pure` version
-    options.forced      - export even if the native feature is available
-    options.bind        - bind methods to the target, required for the `pure` version
-    options.wrap        - wrap constructors to preventing global pollution, required for the `pure` version
-    options.unsafe      - use the simple assignment of property instead of delete + defineProperty
-    options.sham        - add a flag to not completely full polyfills
-    options.enumerable  - export as enumerable property
-    options.noTargetGet - prevent calling a getter on target
-    options.name        - the .name of the function if it does not match the key
+    options.target         - name of the target object
+    options.global         - target is the global object
+    options.stat           - export as static methods of target
+    options.proto          - export as prototype methods of target
+    options.real           - real prototype method for the `pure` version
+    options.forced         - export even if the native feature is available
+    options.bind           - bind methods to the target, required for the `pure` version
+    options.wrap           - wrap constructors to preventing global pollution, required for the `pure` version
+    options.unsafe         - use the simple assignment of property instead of delete + defineProperty
+    options.sham           - add a flag to not completely full polyfills
+    options.enumerable     - export as enumerable property
+    options.dontCallGetSet - prevent calling a getter on target
+    options.name           - the .name of the function if it does not match the key
   */
 
   var _export = function (options, source) {
@@ -1054,17 +1104,17 @@ var markerClusterer = (function (exports) {
     var FORCED, target, key, targetProperty, sourceProperty, descriptor;
 
     if (GLOBAL) {
-      target = global$b;
+      target = global$4;
     } else if (STATIC) {
-      target = global$b[TARGET] || setGlobal(TARGET, {});
+      target = global$4[TARGET] || defineGlobalProperty(TARGET, {});
     } else {
-      target = (global$b[TARGET] || {}).prototype;
+      target = (global$4[TARGET] || {}).prototype;
     }
 
     if (target) for (key in source) {
       sourceProperty = source[key];
 
-      if (options.noTargetGet) {
+      if (options.dontCallGetSet) {
         descriptor = getOwnPropertyDescriptor$1(target, key);
         targetProperty = descriptor && descriptor.value;
       } else targetProperty = target[key];
@@ -1079,10 +1129,9 @@ var markerClusterer = (function (exports) {
 
       if (options.sham || targetProperty && targetProperty.sham) {
         createNonEnumerableProperty$1(sourceProperty, 'sham', true);
-      } // extend global
+      }
 
-
-      redefine$2(target, key, sourceProperty, options);
+      defineBuiltIn$2(target, key, sourceProperty, options);
     }
   };
 
@@ -1102,7 +1151,7 @@ var markerClusterer = (function (exports) {
 
   var classof$6 = classofRaw$1; // `IsArray` abstract operation
   // https://tc39.es/ecma262/#sec-isarray
-  // eslint-disable-next-line es/no-array-isarray -- safe
+  // eslint-disable-next-line es-x/no-array-isarray -- safe
 
   var isArray$1 = Array.isArray || function isArray(argument) {
     return classof$6(argument) == 'Array';
@@ -1114,13 +1163,12 @@ var markerClusterer = (function (exports) {
   test[TO_STRING_TAG$1] = 'z';
   var toStringTagSupport = String(test) === '[object z]';
 
-  var global$a = global$v;
   var TO_STRING_TAG_SUPPORT$2 = toStringTagSupport;
-  var isCallable$3 = isCallable$d;
+  var isCallable$3 = isCallable$e;
   var classofRaw = classofRaw$1;
   var wellKnownSymbol$5 = wellKnownSymbol$8;
   var TO_STRING_TAG = wellKnownSymbol$5('toStringTag');
-  var Object$1 = global$a.Object; // ES3 wrong here
+  var $Object = Object; // ES3 wrong here
 
   var CORRECT_ARGUMENTS = classofRaw(function () {
     return arguments;
@@ -1138,14 +1186,14 @@ var markerClusterer = (function (exports) {
   var classof$5 = TO_STRING_TAG_SUPPORT$2 ? classofRaw : function (it) {
     var O, tag, result;
     return it === undefined ? 'Undefined' : it === null ? 'Null' // @@toStringTag case
-    : typeof (tag = tryGet(O = Object$1(it), TO_STRING_TAG)) == 'string' ? tag // builtinTag case
+    : typeof (tag = tryGet(O = $Object(it), TO_STRING_TAG)) == 'string' ? tag // builtinTag case
     : CORRECT_ARGUMENTS ? classofRaw(O) // ES3 arguments fallback
     : (result = classofRaw(O)) == 'Object' && isCallable$3(O.callee) ? 'Arguments' : result;
   };
 
   var uncurryThis$8 = functionUncurryThis;
-  var fails$4 = fails$c;
-  var isCallable$2 = isCallable$d;
+  var fails$5 = fails$e;
+  var isCallable$2 = isCallable$e;
   var classof$4 = classof$5;
   var getBuiltIn$1 = getBuiltIn$5;
   var inspectSource = inspectSource$3;
@@ -1194,20 +1242,19 @@ var markerClusterer = (function (exports) {
   isConstructorLegacy.sham = true; // `IsConstructor` abstract operation
   // https://tc39.es/ecma262/#sec-isconstructor
 
-  var isConstructor$1 = !construct || fails$4(function () {
+  var isConstructor$1 = !construct || fails$5(function () {
     var called;
     return isConstructorModern(isConstructorModern.call) || !isConstructorModern(Object) || !isConstructorModern(function () {
       called = true;
     }) || called;
   }) ? isConstructorLegacy : isConstructorModern;
 
-  var global$9 = global$v;
   var isArray = isArray$1;
   var isConstructor = isConstructor$1;
   var isObject$2 = isObject$8;
   var wellKnownSymbol$4 = wellKnownSymbol$8;
   var SPECIES$1 = wellKnownSymbol$4('species');
-  var Array$1 = global$9.Array; // a part of `ArraySpeciesCreate` abstract operation
+  var $Array = Array; // a part of `ArraySpeciesCreate` abstract operation
   // https://tc39.es/ecma262/#sec-arrayspeciescreate
 
   var arraySpeciesConstructor$1 = function (originalArray) {
@@ -1216,13 +1263,13 @@ var markerClusterer = (function (exports) {
     if (isArray(originalArray)) {
       C = originalArray.constructor; // cross-realm fallback
 
-      if (isConstructor(C) && (C === Array$1 || isArray(C.prototype))) C = undefined;else if (isObject$2(C)) {
+      if (isConstructor(C) && (C === $Array || isArray(C.prototype))) C = undefined;else if (isObject$2(C)) {
         C = C[SPECIES$1];
         if (C === null) C = undefined;
       }
     }
 
-    return C === undefined ? Array$1 : C;
+    return C === undefined ? $Array : C;
   };
 
   var arraySpeciesConstructor = arraySpeciesConstructor$1; // `ArraySpeciesCreate` abstract operation
@@ -1323,7 +1370,7 @@ var markerClusterer = (function (exports) {
     filterReject: createMethod$2(7)
   };
 
-  var fails$3 = fails$c;
+  var fails$4 = fails$e;
   var wellKnownSymbol$3 = wellKnownSymbol$8;
   var V8_VERSION = engineV8Version;
   var SPECIES = wellKnownSymbol$3('species');
@@ -1332,7 +1379,7 @@ var markerClusterer = (function (exports) {
     // We can't use this feature detection in V8 since it causes
     // deoptimization and serious performance degradation
     // https://github.com/zloirock/core-js/issues/677
-    return V8_VERSION >= 51 || !fails$3(function () {
+    return V8_VERSION >= 51 || !fails$4(function () {
       var array = [];
       var constructor = array.constructor = {};
 
@@ -1390,12 +1437,11 @@ var markerClusterer = (function (exports) {
     return t;
   }
 
-  var global$8 = global$v;
   var aCallable = aCallable$3;
   var toObject$2 = toObject$5;
   var IndexedObject$1 = indexedObject;
   var lengthOfArrayLike$1 = lengthOfArrayLike$4;
-  var TypeError$5 = global$8.TypeError; // `Array.prototype.{ reduce, reduceRight }` methods implementation
+  var $TypeError$4 = TypeError; // `Array.prototype.{ reduce, reduceRight }` methods implementation
 
   var createMethod$1 = function (IS_RIGHT) {
     return function (that, callbackfn, argumentsLength, memo) {
@@ -1415,7 +1461,7 @@ var markerClusterer = (function (exports) {
         index += i;
 
         if (IS_RIGHT ? index < 0 : length <= index) {
-          throw TypeError$5('Reduce of empty array with no initial value');
+          throw $TypeError$4('Reduce of empty array with no initial value');
         }
       }
 
@@ -1436,21 +1482,21 @@ var markerClusterer = (function (exports) {
     right: createMethod$1(true)
   };
 
-  var fails$2 = fails$c;
+  var fails$3 = fails$e;
 
   var arrayMethodIsStrict$3 = function (METHOD_NAME, argument) {
     var method = [][METHOD_NAME];
-    return !!method && fails$2(function () {
-      // eslint-disable-next-line no-useless-call,no-throw-literal -- required for testing
+    return !!method && fails$3(function () {
+      // eslint-disable-next-line no-useless-call -- required for testing
       method.call(null, argument || function () {
-        throw 1;
+        return 1;
       }, 1);
     });
   };
 
   var classof$3 = classofRaw$1;
-  var global$7 = global$v;
-  var engineIsNode = classof$3(global$7.process) == 'process';
+  var global$3 = global$d;
+  var engineIsNode = classof$3(global$3.process) == 'process';
 
   var $$7 = _export;
   var $reduce = arrayReduce.left;
@@ -1485,12 +1531,12 @@ var markerClusterer = (function (exports) {
   };
 
   var TO_STRING_TAG_SUPPORT = toStringTagSupport;
-  var redefine$1 = redefine$3.exports;
+  var defineBuiltIn$1 = defineBuiltIn$3;
   var toString$3 = objectToString; // `Object.prototype.toString` method
   // https://tc39.es/ecma262/#sec-object.prototype.tostring
 
   if (!TO_STRING_TAG_SUPPORT) {
-    redefine$1(Object.prototype, 'toString', toString$3, {
+    defineBuiltIn$1(Object.prototype, 'toString', toString$3, {
       unsafe: true
     });
   }
@@ -1848,14 +1894,14 @@ var markerClusterer = (function (exports) {
   var arrayForEach = !STRICT_METHOD$1 ? function forEach(callbackfn
   /* , thisArg */
   ) {
-    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined); // eslint-disable-next-line es/no-array-prototype-foreach -- safe
+    return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined); // eslint-disable-next-line es-x/no-array-prototype-foreach -- safe
   } : [].forEach;
 
-  var global$6 = global$v;
+  var global$2 = global$d;
   var DOMIterables = domIterables;
   var DOMTokenListPrototype = domTokenListPrototype;
   var forEach = arrayForEach;
-  var createNonEnumerableProperty = createNonEnumerableProperty$4;
+  var createNonEnumerableProperty = createNonEnumerableProperty$3;
 
   var handlePrototype = function (CollectionPrototype) {
     // some Chrome versions have non-configurable methods on DOMTokenList
@@ -1868,7 +1914,7 @@ var markerClusterer = (function (exports) {
 
   for (var COLLECTION_NAME in DOMIterables) {
     if (DOMIterables[COLLECTION_NAME]) {
-      handlePrototype(global$6[COLLECTION_NAME] && global$6[COLLECTION_NAME].prototype);
+      handlePrototype(global$2[COLLECTION_NAME] && global$2[COLLECTION_NAME].prototype);
     }
   }
 
@@ -1887,6 +1933,43 @@ var markerClusterer = (function (exports) {
       return call$1(URL.prototype.toString, this);
     }
   });
+
+  var fastDeepEqual = function equal(a, b) {
+    if (a === b) return true;
+
+    if (a && b && typeof a == 'object' && typeof b == 'object') {
+      if (a.constructor !== b.constructor) return false;
+      var length, i, keys;
+
+      if (Array.isArray(a)) {
+        length = a.length;
+        if (length != b.length) return false;
+
+        for (i = length; i-- !== 0;) if (!equal(a[i], b[i])) return false;
+
+        return true;
+      }
+
+      if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
+      if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
+      if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
+      keys = Object.keys(a);
+      length = keys.length;
+      if (length !== Object.keys(b).length) return false;
+
+      for (i = length; i-- !== 0;) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
+
+      for (i = length; i-- !== 0;) {
+        var key = keys[i];
+        if (!equal(a[key], b[key])) return false;
+      }
+
+      return true;
+    } // true if both NaN, false otherwise
+
+
+    return a !== a && b !== b;
+  };
 
   /**
    * The default Grid algorithm historically used in Google Maps marker
@@ -1916,17 +1999,56 @@ var markerClusterer = (function (exports) {
       _this.clusters = [];
       _this.maxDistance = maxDistance;
       _this.gridSize = gridSize;
+      _this.state = {
+        zoom: null
+      };
       return _this;
     }
 
     _createClass(GridAlgorithm, [{
-      key: "cluster",
-      value: function cluster(_ref) {
-        var _this2 = this;
-
+      key: "calculate",
+      value: function calculate(_ref) {
         var markers = _ref.markers,
             map = _ref.map,
             mapCanvasProjection = _ref.mapCanvasProjection;
+        var state = {
+          zoom: map.getZoom()
+        };
+        var changed = false;
+
+        if (this.state.zoom > this.maxZoom && state.zoom > this.maxZoom) ; else {
+          changed = !fastDeepEqual(this.state, state);
+        }
+
+        this.state = state;
+
+        if (map.getZoom() >= this.maxZoom) {
+          return {
+            clusters: this.noop({
+              markers: markers,
+              map: map,
+              mapCanvasProjection: mapCanvasProjection
+            }),
+            changed: changed
+          };
+        }
+
+        return {
+          clusters: this.cluster({
+            markers: filterMarkersToPaddedViewport(map, mapCanvasProjection, markers, this.viewportPadding),
+            map: map,
+            mapCanvasProjection: mapCanvasProjection
+          })
+        };
+      }
+    }, {
+      key: "cluster",
+      value: function cluster(_ref2) {
+        var _this2 = this;
+
+        var markers = _ref2.markers,
+            map = _ref2.map,
+            mapCanvasProjection = _ref2.mapCanvasProjection;
         this.clusters = [];
         markers.forEach(function (marker) {
           _this2.addToClosestCluster(marker, map, mapCanvasProjection);
@@ -2007,1112 +2129,10 @@ var markerClusterer = (function (exports) {
     return NoopAlgorithm;
   }(AbstractAlgorithm);
 
-  /**
-   * @module helpers
-   */
-
-  /**
-   * Earth Radius used with the Harvesine formula and approximates using a spherical (non-ellipsoid) Earth.
-   *
-   * @memberof helpers
-   * @type {number}
-   */
-  var earthRadius = 6371008.8;
-  /**
-   * Unit of measurement factors using a spherical (non-ellipsoid) earth radius.
-   *
-   * @memberof helpers
-   * @type {Object}
-   */
-
-  var factors = {
-    centimeters: earthRadius * 100,
-    centimetres: earthRadius * 100,
-    degrees: earthRadius / 111325,
-    feet: earthRadius * 3.28084,
-    inches: earthRadius * 39.37,
-    kilometers: earthRadius / 1000,
-    kilometres: earthRadius / 1000,
-    meters: earthRadius,
-    metres: earthRadius,
-    miles: earthRadius / 1609.344,
-    millimeters: earthRadius * 1000,
-    millimetres: earthRadius * 1000,
-    nauticalmiles: earthRadius / 1852,
-    radians: 1,
-    yards: earthRadius * 1.0936
-  };
-  /**
-   * Wraps a GeoJSON {@link Geometry} in a GeoJSON {@link Feature}.
-   *
-   * @name feature
-   * @param {Geometry} geometry input geometry
-   * @param {Object} [properties={}] an Object of key-value pairs to add as properties
-   * @param {Object} [options={}] Optional Parameters
-   * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
-   * @param {string|number} [options.id] Identifier associated with the Feature
-   * @returns {Feature} a GeoJSON Feature
-   * @example
-   * var geometry = {
-   *   "type": "Point",
-   *   "coordinates": [110, 50]
-   * };
-   *
-   * var feature = turf.feature(geometry);
-   *
-   * //=feature
-   */
-
-  function feature(geom, properties, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    var feat = {
-      type: "Feature"
-    };
-
-    if (options.id === 0 || options.id) {
-      feat.id = options.id;
-    }
-
-    if (options.bbox) {
-      feat.bbox = options.bbox;
-    }
-
-    feat.properties = properties || {};
-    feat.geometry = geom;
-    return feat;
-  }
-  /**
-   * Creates a {@link Point} {@link Feature} from a Position.
-   *
-   * @name point
-   * @param {Array<number>} coordinates longitude, latitude position (each in decimal degrees)
-   * @param {Object} [properties={}] an Object of key-value pairs to add as properties
-   * @param {Object} [options={}] Optional Parameters
-   * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
-   * @param {string|number} [options.id] Identifier associated with the Feature
-   * @returns {Feature<Point>} a Point feature
-   * @example
-   * var point = turf.point([-75.343, 39.984]);
-   *
-   * //=point
-   */
-
-  function point(coordinates, properties, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    if (!coordinates) {
-      throw new Error("coordinates is required");
-    }
-
-    if (!Array.isArray(coordinates)) {
-      throw new Error("coordinates must be an Array");
-    }
-
-    if (coordinates.length < 2) {
-      throw new Error("coordinates must be at least 2 numbers long");
-    }
-
-    if (!isNumber(coordinates[0]) || !isNumber(coordinates[1])) {
-      throw new Error("coordinates must contain numbers");
-    }
-
-    var geom = {
-      type: "Point",
-      coordinates: coordinates
-    };
-    return feature(geom, properties, options);
-  }
-  /**
-   * Takes one or more {@link Feature|Features} and creates a {@link FeatureCollection}.
-   *
-   * @name featureCollection
-   * @param {Feature[]} features input features
-   * @param {Object} [options={}] Optional Parameters
-   * @param {Array<number>} [options.bbox] Bounding Box Array [west, south, east, north] associated with the Feature
-   * @param {string|number} [options.id] Identifier associated with the Feature
-   * @returns {FeatureCollection} FeatureCollection of Features
-   * @example
-   * var locationA = turf.point([-75.343, 39.984], {name: 'Location A'});
-   * var locationB = turf.point([-75.833, 39.284], {name: 'Location B'});
-   * var locationC = turf.point([-75.534, 39.123], {name: 'Location C'});
-   *
-   * var collection = turf.featureCollection([
-   *   locationA,
-   *   locationB,
-   *   locationC
-   * ]);
-   *
-   * //=collection
-   */
-
-  function featureCollection(features, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    var fc = {
-      type: "FeatureCollection"
-    };
-
-    if (options.id) {
-      fc.id = options.id;
-    }
-
-    if (options.bbox) {
-      fc.bbox = options.bbox;
-    }
-
-    fc.features = features;
-    return fc;
-  }
-  /**
-   * Convert a distance measurement (assuming a spherical Earth) from radians to a more friendly unit.
-   * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
-   *
-   * @name radiansToLength
-   * @param {number} radians in radians across the sphere
-   * @param {string} [units="kilometers"] can be degrees, radians, miles, inches, yards, metres,
-   * meters, kilometres, kilometers.
-   * @returns {number} distance
-   */
-
-  function radiansToLength(radians, units) {
-    if (units === void 0) {
-      units = "kilometers";
-    }
-
-    var factor = factors[units];
-
-    if (!factor) {
-      throw new Error(units + " units is invalid");
-    }
-
-    return radians * factor;
-  }
-  /**
-   * Convert a distance measurement (assuming a spherical Earth) from a real-world unit into radians
-   * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
-   *
-   * @name lengthToRadians
-   * @param {number} distance in real units
-   * @param {string} [units="kilometers"] can be degrees, radians, miles, inches, yards, metres,
-   * meters, kilometres, kilometers.
-   * @returns {number} radians
-   */
-
-  function lengthToRadians(distance, units) {
-    if (units === void 0) {
-      units = "kilometers";
-    }
-
-    var factor = factors[units];
-
-    if (!factor) {
-      throw new Error(units + " units is invalid");
-    }
-
-    return distance / factor;
-  }
-  /**
-   * Converts an angle in degrees to radians
-   *
-   * @name degreesToRadians
-   * @param {number} degrees angle between 0 and 360 degrees
-   * @returns {number} angle in radians
-   */
-
-  function degreesToRadians(degrees) {
-    var radians = degrees % 360;
-    return radians * Math.PI / 180;
-  }
-  /**
-   * Converts a length to the requested unit.
-   * Valid units: miles, nauticalmiles, inches, yards, meters, metres, kilometers, centimeters, feet
-   *
-   * @param {number} length to be converted
-   * @param {Units} [originalUnit="kilometers"] of the length
-   * @param {Units} [finalUnit="kilometers"] returned unit
-   * @returns {number} the converted length
-   */
-
-  function convertLength(length, originalUnit, finalUnit) {
-    if (originalUnit === void 0) {
-      originalUnit = "kilometers";
-    }
-
-    if (finalUnit === void 0) {
-      finalUnit = "kilometers";
-    }
-
-    if (!(length >= 0)) {
-      throw new Error("length must be a positive number");
-    }
-
-    return radiansToLength(lengthToRadians(length, originalUnit), finalUnit);
-  }
-  /**
-   * isNumber
-   *
-   * @param {*} num Number to validate
-   * @returns {boolean} true/false
-   * @example
-   * turf.isNumber(123)
-   * //=true
-   * turf.isNumber('foo')
-   * //=false
-   */
-
-  function isNumber(num) {
-    return !isNaN(num) && num !== null && !Array.isArray(num);
-  }
-
-  /**
-   * Returns a cloned copy of the passed GeoJSON Object, including possible 'Foreign Members'.
-   * ~3-5x faster than the common JSON.parse + JSON.stringify combo method.
-   *
-   * @name clone
-   * @param {GeoJSON} geojson GeoJSON Object
-   * @returns {GeoJSON} cloned GeoJSON Object
-   * @example
-   * var line = turf.lineString([[-74, 40], [-78, 42], [-82, 35]], {color: 'red'});
-   *
-   * var lineCloned = turf.clone(line);
-   */
-  function clone(geojson) {
-    if (!geojson) {
-      throw new Error("geojson is required");
-    }
-
-    switch (geojson.type) {
-      case "Feature":
-        return cloneFeature(geojson);
-
-      case "FeatureCollection":
-        return cloneFeatureCollection(geojson);
-
-      case "Point":
-      case "LineString":
-      case "Polygon":
-      case "MultiPoint":
-      case "MultiLineString":
-      case "MultiPolygon":
-      case "GeometryCollection":
-        return cloneGeometry(geojson);
-
-      default:
-        throw new Error("unknown GeoJSON type");
-    }
-  }
-  /**
-   * Clone Feature
-   *
-   * @private
-   * @param {Feature<any>} geojson GeoJSON Feature
-   * @returns {Feature<any>} cloned Feature
-   */
-
-
-  function cloneFeature(geojson) {
-    var cloned = {
-      type: "Feature"
-    }; // Preserve Foreign Members
-
-    Object.keys(geojson).forEach(function (key) {
-      switch (key) {
-        case "type":
-        case "properties":
-        case "geometry":
-          return;
-
-        default:
-          cloned[key] = geojson[key];
-      }
-    }); // Add properties & geometry last
-
-    cloned.properties = cloneProperties(geojson.properties);
-    cloned.geometry = cloneGeometry(geojson.geometry);
-    return cloned;
-  }
-  /**
-   * Clone Properties
-   *
-   * @private
-   * @param {Object} properties GeoJSON Properties
-   * @returns {Object} cloned Properties
-   */
-
-
-  function cloneProperties(properties) {
-    var cloned = {};
-
-    if (!properties) {
-      return cloned;
-    }
-
-    Object.keys(properties).forEach(function (key) {
-      var value = properties[key];
-
-      if (typeof value === "object") {
-        if (value === null) {
-          // handle null
-          cloned[key] = null;
-        } else if (Array.isArray(value)) {
-          // handle Array
-          cloned[key] = value.map(function (item) {
-            return item;
-          });
-        } else {
-          // handle generic Object
-          cloned[key] = cloneProperties(value);
-        }
-      } else {
-        cloned[key] = value;
-      }
-    });
-    return cloned;
-  }
-  /**
-   * Clone Feature Collection
-   *
-   * @private
-   * @param {FeatureCollection<any>} geojson GeoJSON Feature Collection
-   * @returns {FeatureCollection<any>} cloned Feature Collection
-   */
-
-
-  function cloneFeatureCollection(geojson) {
-    var cloned = {
-      type: "FeatureCollection"
-    }; // Preserve Foreign Members
-
-    Object.keys(geojson).forEach(function (key) {
-      switch (key) {
-        case "type":
-        case "features":
-          return;
-
-        default:
-          cloned[key] = geojson[key];
-      }
-    }); // Add features
-
-    cloned.features = geojson.features.map(function (feature) {
-      return cloneFeature(feature);
-    });
-    return cloned;
-  }
-  /**
-   * Clone Geometry
-   *
-   * @private
-   * @param {Geometry<any>} geometry GeoJSON Geometry
-   * @returns {Geometry<any>} cloned Geometry
-   */
-
-
-  function cloneGeometry(geometry) {
-    var geom = {
-      type: geometry.type
-    };
-
-    if (geometry.bbox) {
-      geom.bbox = geometry.bbox;
-    }
-
-    if (geometry.type === "GeometryCollection") {
-      geom.geometries = geometry.geometries.map(function (g) {
-        return cloneGeometry(g);
-      });
-      return geom;
-    }
-
-    geom.coordinates = deepSlice(geometry.coordinates);
-    return geom;
-  }
-  /**
-   * Deep Slice coordinates
-   *
-   * @private
-   * @param {Coordinates} coords Coordinates
-   * @returns {Coordinates} all coordinates sliced
-   */
-
-
-  function deepSlice(coords) {
-    var cloned = coords;
-
-    if (typeof cloned[0] !== "object") {
-      return cloned.slice();
-    }
-
-    return cloned.map(function (coord) {
-      return deepSlice(coord);
-    });
-  }
-
-  /**
-   * Callback for coordEach
-   *
-   * @callback coordEachCallback
-   * @param {Array<number>} currentCoord The current coordinate being processed.
-   * @param {number} coordIndex The current index of the coordinate being processed.
-   * @param {number} featureIndex The current index of the Feature being processed.
-   * @param {number} multiFeatureIndex The current index of the Multi-Feature being processed.
-   * @param {number} geometryIndex The current index of the Geometry being processed.
-   */
-
-  /**
-   * Iterate over coordinates in any GeoJSON object, similar to Array.forEach()
-   *
-   * @name coordEach
-   * @param {FeatureCollection|Feature|Geometry} geojson any GeoJSON object
-   * @param {Function} callback a method that takes (currentCoord, coordIndex, featureIndex, multiFeatureIndex)
-   * @param {boolean} [excludeWrapCoord=false] whether or not to include the final coordinate of LinearRings that wraps the ring in its iteration.
-   * @returns {void}
-   * @example
-   * var features = turf.featureCollection([
-   *   turf.point([26, 37], {"foo": "bar"}),
-   *   turf.point([36, 53], {"hello": "world"})
-   * ]);
-   *
-   * turf.coordEach(features, function (currentCoord, coordIndex, featureIndex, multiFeatureIndex, geometryIndex) {
-   *   //=currentCoord
-   *   //=coordIndex
-   *   //=featureIndex
-   *   //=multiFeatureIndex
-   *   //=geometryIndex
-   * });
-   */
-
-  function coordEach(geojson, callback, excludeWrapCoord) {
-    // Handles null Geometry -- Skips this GeoJSON
-    if (geojson === null) return;
-    var j,
-        k,
-        l,
-        geometry,
-        stopG,
-        coords,
-        geometryMaybeCollection,
-        wrapShrink = 0,
-        coordIndex = 0,
-        isGeometryCollection,
-        type = geojson.type,
-        isFeatureCollection = type === "FeatureCollection",
-        isFeature = type === "Feature",
-        stop = isFeatureCollection ? geojson.features.length : 1; // This logic may look a little weird. The reason why it is that way
-    // is because it's trying to be fast. GeoJSON supports multiple kinds
-    // of objects at its root: FeatureCollection, Features, Geometries.
-    // This function has the responsibility of handling all of them, and that
-    // means that some of the `for` loops you see below actually just don't apply
-    // to certain inputs. For instance, if you give this just a
-    // Point geometry, then both loops are short-circuited and all we do
-    // is gradually rename the input until it's called 'geometry'.
-    //
-    // This also aims to allocate as few resources as possible: just a
-    // few numbers and booleans, rather than any temporary arrays as would
-    // be required with the normalization approach.
-
-    for (var featureIndex = 0; featureIndex < stop; featureIndex++) {
-      geometryMaybeCollection = isFeatureCollection ? geojson.features[featureIndex].geometry : isFeature ? geojson.geometry : geojson;
-      isGeometryCollection = geometryMaybeCollection ? geometryMaybeCollection.type === "GeometryCollection" : false;
-      stopG = isGeometryCollection ? geometryMaybeCollection.geometries.length : 1;
-
-      for (var geomIndex = 0; geomIndex < stopG; geomIndex++) {
-        var multiFeatureIndex = 0;
-        var geometryIndex = 0;
-        geometry = isGeometryCollection ? geometryMaybeCollection.geometries[geomIndex] : geometryMaybeCollection; // Handles null Geometry -- Skips this geometry
-
-        if (geometry === null) continue;
-        coords = geometry.coordinates;
-        var geomType = geometry.type;
-        wrapShrink = excludeWrapCoord && (geomType === "Polygon" || geomType === "MultiPolygon") ? 1 : 0;
-
-        switch (geomType) {
-          case null:
-            break;
-
-          case "Point":
-            if (callback(coords, coordIndex, featureIndex, multiFeatureIndex, geometryIndex) === false) return false;
-            coordIndex++;
-            multiFeatureIndex++;
-            break;
-
-          case "LineString":
-          case "MultiPoint":
-            for (j = 0; j < coords.length; j++) {
-              if (callback(coords[j], coordIndex, featureIndex, multiFeatureIndex, geometryIndex) === false) return false;
-              coordIndex++;
-              if (geomType === "MultiPoint") multiFeatureIndex++;
-            }
-
-            if (geomType === "LineString") multiFeatureIndex++;
-            break;
-
-          case "Polygon":
-          case "MultiLineString":
-            for (j = 0; j < coords.length; j++) {
-              for (k = 0; k < coords[j].length - wrapShrink; k++) {
-                if (callback(coords[j][k], coordIndex, featureIndex, multiFeatureIndex, geometryIndex) === false) return false;
-                coordIndex++;
-              }
-
-              if (geomType === "MultiLineString") multiFeatureIndex++;
-              if (geomType === "Polygon") geometryIndex++;
-            }
-
-            if (geomType === "Polygon") multiFeatureIndex++;
-            break;
-
-          case "MultiPolygon":
-            for (j = 0; j < coords.length; j++) {
-              geometryIndex = 0;
-
-              for (k = 0; k < coords[j].length; k++) {
-                for (l = 0; l < coords[j][k].length - wrapShrink; l++) {
-                  if (callback(coords[j][k][l], coordIndex, featureIndex, multiFeatureIndex, geometryIndex) === false) return false;
-                  coordIndex++;
-                }
-
-                geometryIndex++;
-              }
-
-              multiFeatureIndex++;
-            }
-
-            break;
-
-          case "GeometryCollection":
-            for (j = 0; j < geometry.geometries.length; j++) if (coordEach(geometry.geometries[j], callback, excludeWrapCoord) === false) return false;
-
-            break;
-
-          default:
-            throw new Error("Unknown Geometry Type");
-        }
-      }
-    }
-  }
-  /**
-   * Callback for featureEach
-   *
-   * @callback featureEachCallback
-   * @param {Feature<any>} currentFeature The current Feature being processed.
-   * @param {number} featureIndex The current index of the Feature being processed.
-   */
-
-  /**
-   * Iterate over features in any GeoJSON object, similar to
-   * Array.forEach.
-   *
-   * @name featureEach
-   * @param {FeatureCollection|Feature|Geometry} geojson any GeoJSON object
-   * @param {Function} callback a method that takes (currentFeature, featureIndex)
-   * @returns {void}
-   * @example
-   * var features = turf.featureCollection([
-   *   turf.point([26, 37], {foo: 'bar'}),
-   *   turf.point([36, 53], {hello: 'world'})
-   * ]);
-   *
-   * turf.featureEach(features, function (currentFeature, featureIndex) {
-   *   //=currentFeature
-   *   //=featureIndex
-   * });
-   */
-
-
-  function featureEach(geojson, callback) {
-    if (geojson.type === "Feature") {
-      callback(geojson, 0);
-    } else if (geojson.type === "FeatureCollection") {
-      for (var i = 0; i < geojson.features.length; i++) {
-        if (callback(geojson.features[i], i) === false) break;
-      }
-    }
-  }
-  /**
-   * Get all coordinates from any GeoJSON object.
-   *
-   * @name coordAll
-   * @param {FeatureCollection|Feature|Geometry} geojson any GeoJSON object
-   * @returns {Array<Array<number>>} coordinate position array
-   * @example
-   * var features = turf.featureCollection([
-   *   turf.point([26, 37], {foo: 'bar'}),
-   *   turf.point([36, 53], {hello: 'world'})
-   * ]);
-   *
-   * var coords = turf.coordAll(features);
-   * //= [[26, 37], [36, 53]]
-   */
-
-
-  function coordAll(geojson) {
-    var coords = [];
-    coordEach(geojson, function (coord) {
-      coords.push(coord);
-    });
-    return coords;
-  }
-
-  var distance$1 = {
-    /**
-     * Euclidean distance
-     */
-    eudist: function eudist(v1, v2, sqrt) {
-      var len = v1.length;
-      var sum = 0;
-
-      for (var i = 0; i < len; i++) {
-        var d = (v1[i] || 0) - (v2[i] || 0);
-        sum += d * d;
-      } // Square root not really needed
-
-
-      return sqrt ? Math.sqrt(sum) : sum;
-    },
-    mandist: function mandist(v1, v2, sqrt) {
-      var len = v1.length;
-      var sum = 0;
-
-      for (var i = 0; i < len; i++) {
-        sum += Math.abs((v1[i] || 0) - (v2[i] || 0));
-      } // Square root not really needed
-
-
-      return sqrt ? Math.sqrt(sum) : sum;
-    },
-
-    /**
-     * Unidimensional distance
-     */
-    dist: function dist(v1, v2, sqrt) {
-      var d = Math.abs(v1 - v2);
-      return sqrt ? d : d * d;
-    }
-  };
-
-  var Distance$1 = distance$1,
-      eudist$1 = Distance$1.eudist,
-      dist = Distance$1.dist;
-  var kinit = {
-    kmrand: function kmrand(data, k) {
-      var map = {},
-          ks = [],
-          t = k << 2;
-      var len = data.length;
-      var multi = data[0].length > 0;
-
-      while (ks.length < k && t-- > 0) {
-        var d = data[Math.floor(Math.random() * len)];
-        var key = multi ? d.join("_") : "" + d;
-
-        if (!map[key]) {
-          map[key] = true;
-          ks.push(d);
-        }
-      }
-
-      if (ks.length < k) throw new Error("Error initializating clusters");else return ks;
-    },
-
-    /**
-     * K-means++ initial centroid selection
-     */
-    kmpp: function kmpp(data, k) {
-      var distance = data[0].length ? eudist$1 : dist;
-      var ks = [],
-          len = data.length;
-      var multi = data[0].length > 0;
-      var map = {}; // First random centroid
-
-      var c = data[Math.floor(Math.random() * len)];
-      var key = multi ? c.join("_") : "" + c;
-      ks.push(c);
-      map[key] = true; // Retrieve next centroids
-
-      while (ks.length < k) {
-        // Min Distances between current centroids and data points
-        var dists = [],
-            lk = ks.length;
-        var dsum = 0,
-            prs = [];
-
-        for (var i = 0; i < len; i++) {
-          var min = Infinity;
-
-          for (var j = 0; j < lk; j++) {
-            var _dist = distance(data[i], ks[j]);
-
-            if (_dist <= min) min = _dist;
-          }
-
-          dists[i] = min;
-        } // Sum all min distances
-
-
-        for (var _i = 0; _i < len; _i++) {
-          dsum += dists[_i];
-        } // Probabilities and cummulative prob (cumsum)
-
-
-        for (var _i2 = 0; _i2 < len; _i2++) {
-          prs[_i2] = {
-            i: _i2,
-            v: data[_i2],
-            pr: dists[_i2] / dsum,
-            cs: 0
-          };
-        } // Sort Probabilities
-
-
-        prs.sort(function (a, b) {
-          return a.pr - b.pr;
-        }); // Cummulative Probabilities
-
-        prs[0].cs = prs[0].pr;
-
-        for (var _i3 = 1; _i3 < len; _i3++) {
-          prs[_i3].cs = prs[_i3 - 1].cs + prs[_i3].pr;
-        } // Randomize
-
-
-        var rnd = Math.random(); // Gets only the items whose cumsum >= rnd
-
-        var idx = 0;
-
-        while (idx < len - 1 && prs[idx++].cs < rnd) {}
-
-        ks.push(prs[idx - 1].v);
-        /*
-        let done = false;
-        while(!done) {
-        	// this is our new centroid
-        	c = prs[idx-1].v
-        	key = multi? c.join("_") : `${c}`;
-        	if(!map[key]) {
-        		map[key] = true;
-        		ks.push(c);
-        		done = true;
-        	}
-        	else {
-        		idx++;
-        	}
-        }
-        */
-      }
-
-      return ks;
-    }
-  };
-
-  /*jshint esversion: 6 */
-
-
-  var Distance = distance$1,
-      ClusterInit = kinit,
-      eudist = Distance.eudist,
-      kmrand = ClusterInit.kmrand,
-      kmpp = ClusterInit.kmpp;
-  var MAX = 10000;
-  /**
-   * Inits an array with values
-   */
-
-  function init(len, val, v) {
-    v = v || [];
-
-    for (var i = 0; i < len; i++) {
-      v[i] = val;
-    }
-
-    return v;
-  }
-
-  function skmeans(data, k, initial, maxit) {
-    var ks = [],
-        old = [],
-        idxs = [],
-        dist = [];
-    var conv = false,
-        it = maxit || MAX;
-    var len = data.length,
-        vlen = data[0].length,
-        multi = vlen > 0;
-    var count = [];
-
-    if (!initial) {
-      var _idxs = {};
-
-      while (ks.length < k) {
-        var idx = Math.floor(Math.random() * len);
-
-        if (!_idxs[idx]) {
-          _idxs[idx] = true;
-          ks.push(data[idx]);
-        }
-      }
-    } else if (initial == "kmrand") {
-      ks = kmrand(data, k);
-    } else if (initial == "kmpp") {
-      ks = kmpp(data, k);
-    } else {
-      ks = initial;
-    }
-
-    do {
-      // Reset k count
-      init(k, 0, count); // For each value in data, find the nearest centroid
-
-      for (var i = 0; i < len; i++) {
-        var min = Infinity,
-            _idx = 0;
-
-        for (var j = 0; j < k; j++) {
-          // Multidimensional or unidimensional
-          var dist = multi ? eudist(data[i], ks[j]) : Math.abs(data[i] - ks[j]);
-
-          if (dist <= min) {
-            min = dist;
-            _idx = j;
-          }
-        }
-
-        idxs[i] = _idx; // Index of the selected centroid for that value
-
-        count[_idx]++; // Number of values for this centroid
-      } // Recalculate centroids
-
-
-      var sum = [],
-          old = [];
-
-      for (var _j = 0; _j < k; _j++) {
-        // Multidimensional or unidimensional
-        sum[_j] = multi ? init(vlen, 0, sum[_j]) : 0;
-        old[_j] = ks[_j];
-      } // If multidimensional
-
-
-      if (multi) {
-        for (var _j2 = 0; _j2 < k; _j2++) {
-          ks[_j2] = [];
-        } // Sum values and count for each centroid
-
-
-        for (var _i = 0; _i < len; _i++) {
-          var _idx2 = idxs[_i],
-              // Centroid for that item
-          vsum = sum[_idx2],
-              // Sum values for this centroid
-          vect = data[_i]; // Current vector
-          // Accumulate value on the centroid for current vector
-
-          for (var h = 0; h < vlen; h++) {
-            vsum[h] += vect[h];
-          }
-        } // Calculate the average for each centroid
-
-
-        conv = true;
-
-        for (var _j3 = 0; _j3 < k; _j3++) {
-          var ksj = ks[_j3],
-              // Current centroid
-          sumj = sum[_j3],
-              // Accumulated centroid values
-          oldj = old[_j3],
-              // Old centroid value
-          cj = count[_j3]; // Number of elements for this centroid
-          // New average
-
-          for (var _h = 0; _h < vlen; _h++) {
-            ksj[_h] = sumj[_h] / cj || 0; // New centroid
-          } // Find if centroids have moved
-
-
-          if (conv) {
-            for (var _h2 = 0; _h2 < vlen; _h2++) {
-              if (oldj[_h2] != ksj[_h2]) {
-                conv = false;
-                break;
-              }
-            }
-          }
-        }
-      } // If unidimensional
-      else {
-          // Sum values and count for each centroid
-          for (var _i2 = 0; _i2 < len; _i2++) {
-            var _idx3 = idxs[_i2];
-            sum[_idx3] += data[_i2];
-          } // Calculate the average for each centroid
-
-
-          for (var _j4 = 0; _j4 < k; _j4++) {
-            ks[_j4] = sum[_j4] / count[_j4] || 0; // New centroid
-          } // Find if centroids have moved
-
-
-          conv = true;
-
-          for (var _j5 = 0; _j5 < k; _j5++) {
-            if (old[_j5] != ks[_j5]) {
-              conv = false;
-              break;
-            }
-          }
-        }
-
-      conv = conv || --it <= 0;
-    } while (!conv);
-
-    return {
-      it: MAX - it,
-      k: k,
-      idxs: idxs,
-      centroids: ks
-    };
-  }
-
-  var main = skmeans;
-
-  /**
-   * Takes a set of {@link Point|points} and partition them into clusters using the k-mean .
-   * It uses the [k-means algorithm](https://en.wikipedia.org/wiki/K-means_clustering)
-   *
-   * @name clustersKmeans
-   * @param {FeatureCollection<Point>} points to be clustered
-   * @param {Object} [options={}] Optional parameters
-   * @param {number} [options.numberOfClusters=Math.sqrt(numberOfPoints/2)] numberOfClusters that will be generated
-   * @param {boolean} [options.mutate=false] allows GeoJSON input to be mutated (significant performance increase if true)
-   * @returns {FeatureCollection<Point>} Clustered Points with an additional two properties associated to each Feature:
-   * - {number} cluster - the associated clusterId
-   * - {[number, number]} centroid - Centroid of the cluster [Longitude, Latitude]
-   * @example
-   * // create random points with random z-values in their properties
-   * var points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});
-   * var options = {numberOfClusters: 7};
-   * var clustered = turf.clustersKmeans(points, options);
-   *
-   * //addToMap
-   * var addToMap = [clustered];
-   */
-
-  function clustersKmeans(points, options) {
-    if (options === void 0) {
-      options = {};
-    } // Default Params
-
-
-    var count = points.features.length;
-    options.numberOfClusters = options.numberOfClusters || Math.round(Math.sqrt(count / 2)); // numberOfClusters can't be greater than the number of points
-    // fallbacks to count
-
-    if (options.numberOfClusters > count) options.numberOfClusters = count; // Clone points to prevent any mutations (enabled by default)
-
-    if (options.mutate !== true) points = clone(points); // collect points coordinates
-
-    var data = coordAll(points); // create seed to avoid skmeans to drift
-
-    var initialCentroids = data.slice(0, options.numberOfClusters); // create skmeans clusters
-
-    var skmeansResult = main(data, options.numberOfClusters, initialCentroids); // store centroids {clusterId: [number, number]}
-
-    var centroids = {};
-    skmeansResult.centroids.forEach(function (coord, idx) {
-      centroids[idx] = coord;
-    }); // add associated cluster number
-
-    featureEach(points, function (point, index) {
-      var clusterId = skmeansResult.idxs[index];
-      point.properties.cluster = clusterId;
-      point.properties.centroid = centroids[clusterId];
-    });
-    return points;
-  }
-
-  /**
-   * Experimental algorithm using Kmeans.
-   *
-   * The Grid algorithm does not implement caching and markers may flash as the
-   * viewport changes. Instead use {@link SuperClusterAlgorithm}.
-   *
-   * @see https://www.npmjs.com/package/@turf/clusters-kmeans
-   */
-
-  var KmeansAlgorithm = /*#__PURE__*/function (_AbstractViewportAlgo) {
-    _inherits(KmeansAlgorithm, _AbstractViewportAlgo);
-
-    var _super = _createSuper(KmeansAlgorithm);
-
-    function KmeansAlgorithm(_a) {
-      var _this;
-
-      _classCallCheck(this, KmeansAlgorithm);
-
-      var numberOfClusters = _a.numberOfClusters,
-          options = __rest(_a, ["numberOfClusters"]);
-
-      _this = _super.call(this, options);
-      _this.numberOfClusters = numberOfClusters;
-      return _this;
-    }
-
-    _createClass(KmeansAlgorithm, [{
-      key: "cluster",
-      value: function cluster(_ref) {
-        var markers = _ref.markers,
-            map = _ref.map;
-        var clusters = [];
-
-        if (markers.length === 0) {
-          return clusters;
-        }
-
-        var points = featureCollection(markers.map(function (marker) {
-          return point([marker.getPosition().lng(), marker.getPosition().lat()]);
-        }));
-        var numberOfClusters;
-
-        if (this.numberOfClusters instanceof Function) {
-          numberOfClusters = this.numberOfClusters(markers.length, map.getZoom());
-        } else {
-          numberOfClusters = this.numberOfClusters;
-        }
-
-        clustersKmeans(points, {
-          numberOfClusters: numberOfClusters
-        }).features.forEach(function (point, i) {
-          if (!clusters[point.properties.cluster]) {
-            clusters[point.properties.cluster] = new Cluster({
-              position: {
-                lng: point.properties.centroid[0],
-                lat: point.properties.centroid[1]
-              },
-              markers: []
-            });
-          }
-
-          clusters[point.properties.cluster].push(markers[i]);
-        });
-        return clusters;
-      }
-    }]);
-
-    return KmeansAlgorithm;
-  }(AbstractViewportAlgorithm);
-
   var internalObjectKeys = objectKeysInternal;
   var enumBugKeys$1 = enumBugKeys$3; // `Object.keys` method
   // https://tc39.es/ecma262/#sec-object.keys
-  // eslint-disable-next-line es/no-object-keys -- safe
+  // eslint-disable-next-line es-x/no-object-keys -- safe
 
   var objectKeys$2 = Object.keys || function keys(O) {
     return internalObjectKeys(O, enumBugKeys$1);
@@ -3121,27 +2141,27 @@ var markerClusterer = (function (exports) {
   var DESCRIPTORS$2 = descriptors;
   var uncurryThis$6 = functionUncurryThis;
   var call = functionCall;
-  var fails$1 = fails$c;
+  var fails$2 = fails$e;
   var objectKeys$1 = objectKeys$2;
   var getOwnPropertySymbolsModule = objectGetOwnPropertySymbols;
   var propertyIsEnumerableModule = objectPropertyIsEnumerable;
   var toObject$1 = toObject$5;
-  var IndexedObject = indexedObject; // eslint-disable-next-line es/no-object-assign -- safe
+  var IndexedObject = indexedObject; // eslint-disable-next-line es-x/no-object-assign -- safe
 
-  var $assign = Object.assign; // eslint-disable-next-line es/no-object-defineproperty -- required for testing
+  var $assign = Object.assign; // eslint-disable-next-line es-x/no-object-defineproperty -- required for testing
 
-  var defineProperty$1 = Object.defineProperty;
+  var defineProperty$2 = Object.defineProperty;
   var concat = uncurryThis$6([].concat); // `Object.assign` method
   // https://tc39.es/ecma262/#sec-object.assign
 
-  var objectAssign = !$assign || fails$1(function () {
+  var objectAssign = !$assign || fails$2(function () {
     // should have correct order of operations (Edge bug)
     if (DESCRIPTORS$2 && $assign({
       b: 1
-    }, $assign(defineProperty$1({}, 'a', {
+    }, $assign(defineProperty$2({}, 'a', {
       enumerable: true,
       get: function () {
-        defineProperty$1(this, 'b', {
+        defineProperty$2(this, 'b', {
           value: 3,
           enumerable: false
         });
@@ -3151,7 +2171,7 @@ var markerClusterer = (function (exports) {
     })).b !== 1) return true; // should work with symbols and should have deterministic property order (V8 bug)
 
     var A = {};
-    var B = {}; // eslint-disable-next-line es/no-symbol -- safe
+    var B = {}; // eslint-disable-next-line es-x/no-symbol -- safe
 
     var symbol = Symbol();
     var alphabet = 'abcdefghijklmnopqrst';
@@ -3187,1200 +2207,16 @@ var markerClusterer = (function (exports) {
   var $$4 = _export;
   var assign = objectAssign; // `Object.assign` method
   // https://tc39.es/ecma262/#sec-object.assign
-  // eslint-disable-next-line es/no-object-assign -- required for testing
+  // eslint-disable-next-line es-x/no-object-assign -- required for testing
 
   $$4({
     target: 'Object',
     stat: true,
+    arity: 2,
     forced: Object.assign !== assign
   }, {
     assign: assign
   });
-
-  /**
-   * Unwrap a coordinate from a Point Feature, Geometry or a single coordinate.
-   *
-   * @name getCoord
-   * @param {Array<number>|Geometry<Point>|Feature<Point>} coord GeoJSON Point or an Array of numbers
-   * @returns {Array<number>} coordinates
-   * @example
-   * var pt = turf.point([10, 10]);
-   *
-   * var coord = turf.getCoord(pt);
-   * //= [10, 10]
-   */
-
-  function getCoord(coord) {
-    if (!coord) {
-      throw new Error("coord is required");
-    }
-
-    if (!Array.isArray(coord)) {
-      if (coord.type === "Feature" && coord.geometry !== null && coord.geometry.type === "Point") {
-        return coord.geometry.coordinates;
-      }
-
-      if (coord.type === "Point") {
-        return coord.coordinates;
-      }
-    }
-
-    if (Array.isArray(coord) && coord.length >= 2 && !Array.isArray(coord[0]) && !Array.isArray(coord[1])) {
-      return coord;
-    }
-
-    throw new Error("coord must be GeoJSON Point or an Array of numbers");
-  }
-
-  //http://www.movable-type.co.uk/scripts/latlong.html
-
-  /**
-   * Calculates the distance between two {@link Point|points} in degrees, radians, miles, or kilometers.
-   * This uses the [Haversine formula](http://en.wikipedia.org/wiki/Haversine_formula) to account for global curvature.
-   *
-   * @name distance
-   * @param {Coord | Point} from origin point or coordinate
-   * @param {Coord | Point} to destination point or coordinate
-   * @param {Object} [options={}] Optional parameters
-   * @param {string} [options.units='kilometers'] can be degrees, radians, miles, or kilometers
-   * @returns {number} distance between the two points
-   * @example
-   * var from = turf.point([-75.343, 39.984]);
-   * var to = turf.point([-75.534, 39.123]);
-   * var options = {units: 'miles'};
-   *
-   * var distance = turf.distance(from, to, options);
-   *
-   * //addToMap
-   * var addToMap = [from, to];
-   * from.properties.distance = distance;
-   * to.properties.distance = distance;
-   */
-
-  function distance(from, to, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    var coordinates1 = getCoord(from);
-    var coordinates2 = getCoord(to);
-    var dLat = degreesToRadians(coordinates2[1] - coordinates1[1]);
-    var dLon = degreesToRadians(coordinates2[0] - coordinates1[0]);
-    var lat1 = degreesToRadians(coordinates1[1]);
-    var lat2 = degreesToRadians(coordinates2[1]);
-    var a = Math.pow(Math.sin(dLat / 2), 2) + Math.pow(Math.sin(dLon / 2), 2) * Math.cos(lat1) * Math.cos(lat2);
-    return radiansToLength(2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)), options.units);
-  }
-
-  var lib = {exports: {}};
-
-  var DBSCAN = {exports: {}};
-
-  /**
-   * DBSCAN - Density based clustering
-   *
-   * @author Lukasz Krawczyk <contact@lukaszkrawczyk.eu>
-   * @copyright MIT
-   */
-
-  (function (module) {
-    /**
-     * DBSCAN class construcotr
-     * @constructor
-     *
-     * @param {Array} dataset
-     * @param {number} epsilon
-     * @param {number} minPts
-     * @param {function} distanceFunction
-     * @returns {DBSCAN}
-     */
-    function DBSCAN(dataset, epsilon, minPts, distanceFunction) {
-      /** @type {Array} */
-      this.dataset = [];
-      /** @type {number} */
-
-      this.epsilon = 1;
-      /** @type {number} */
-
-      this.minPts = 2;
-      /** @type {function} */
-
-      this.distance = this._euclideanDistance;
-      /** @type {Array} */
-
-      this.clusters = [];
-      /** @type {Array} */
-
-      this.noise = []; // temporary variables used during computation
-
-      /** @type {Array} */
-
-      this._visited = [];
-      /** @type {Array} */
-
-      this._assigned = [];
-      /** @type {number} */
-
-      this._datasetLength = 0;
-
-      this._init(dataset, epsilon, minPts, distanceFunction);
-    }
-    /******************************************************************************/
-    // public functions
-
-    /**
-     * Start clustering
-     *
-     * @param {Array} dataset
-     * @param {number} epsilon
-     * @param {number} minPts
-     * @param {function} distanceFunction
-     * @returns {undefined}
-     * @access public
-     */
-
-    DBSCAN.prototype.run = function (dataset, epsilon, minPts, distanceFunction) {
-      this._init(dataset, epsilon, minPts, distanceFunction);
-
-      for (var pointId = 0; pointId < this._datasetLength; pointId++) {
-        // if point is not visited, check if it forms a cluster
-        if (this._visited[pointId] !== 1) {
-          this._visited[pointId] = 1; // if closest neighborhood is too small to form a cluster, mark as noise
-
-          var neighbors = this._regionQuery(pointId);
-
-          if (neighbors.length < this.minPts) {
-            this.noise.push(pointId);
-          } else {
-            // create new cluster and add point
-            var clusterId = this.clusters.length;
-            this.clusters.push([]);
-
-            this._addToCluster(pointId, clusterId);
-
-            this._expandCluster(clusterId, neighbors);
-          }
-        }
-      }
-
-      return this.clusters;
-    };
-    /******************************************************************************/
-    // protected functions
-
-    /**
-     * Set object properties
-     *
-     * @param {Array} dataset
-     * @param {number} epsilon
-     * @param {number} minPts
-     * @param {function} distance
-     * @returns {undefined}
-     * @access protected
-     */
-
-
-    DBSCAN.prototype._init = function (dataset, epsilon, minPts, distance) {
-      if (dataset) {
-        if (!(dataset instanceof Array)) {
-          throw Error('Dataset must be of type array, ' + typeof dataset + ' given');
-        }
-
-        this.dataset = dataset;
-        this.clusters = [];
-        this.noise = [];
-        this._datasetLength = dataset.length;
-        this._visited = new Array(this._datasetLength);
-        this._assigned = new Array(this._datasetLength);
-      }
-
-      if (epsilon) {
-        this.epsilon = epsilon;
-      }
-
-      if (minPts) {
-        this.minPts = minPts;
-      }
-
-      if (distance) {
-        this.distance = distance;
-      }
-    };
-    /**
-     * Expand cluster to closest points of given neighborhood
-     *
-     * @param {number} clusterId
-     * @param {Array} neighbors
-     * @returns {undefined}
-     * @access protected
-     */
-
-
-    DBSCAN.prototype._expandCluster = function (clusterId, neighbors) {
-      /**
-       * It's very important to calculate length of neighbors array each time,
-       * as the number of elements changes over time
-       */
-      for (var i = 0; i < neighbors.length; i++) {
-        var pointId2 = neighbors[i];
-
-        if (this._visited[pointId2] !== 1) {
-          this._visited[pointId2] = 1;
-
-          var neighbors2 = this._regionQuery(pointId2);
-
-          if (neighbors2.length >= this.minPts) {
-            neighbors = this._mergeArrays(neighbors, neighbors2);
-          }
-        } // add to cluster
-
-
-        if (this._assigned[pointId2] !== 1) {
-          this._addToCluster(pointId2, clusterId);
-        }
-      }
-    };
-    /**
-     * Add new point to cluster
-     *
-     * @param {number} pointId
-     * @param {number} clusterId
-     */
-
-
-    DBSCAN.prototype._addToCluster = function (pointId, clusterId) {
-      this.clusters[clusterId].push(pointId);
-      this._assigned[pointId] = 1;
-    };
-    /**
-     * Find all neighbors around given point
-     *
-     * @param {number} pointId,
-     * @param {number} epsilon
-     * @returns {Array}
-     * @access protected
-     */
-
-
-    DBSCAN.prototype._regionQuery = function (pointId) {
-      var neighbors = [];
-
-      for (var id = 0; id < this._datasetLength; id++) {
-        var dist = this.distance(this.dataset[pointId], this.dataset[id]);
-
-        if (dist < this.epsilon) {
-          neighbors.push(id);
-        }
-      }
-
-      return neighbors;
-    };
-    /******************************************************************************/
-    // helpers
-
-    /**
-     * @param {Array} a
-     * @param {Array} b
-     * @returns {Array}
-     * @access protected
-     */
-
-
-    DBSCAN.prototype._mergeArrays = function (a, b) {
-      var len = b.length;
-
-      for (var i = 0; i < len; i++) {
-        var P = b[i];
-
-        if (a.indexOf(P) < 0) {
-          a.push(P);
-        }
-      }
-
-      return a;
-    };
-    /**
-     * Calculate euclidean distance in multidimensional space
-     *
-     * @param {Array} p
-     * @param {Array} q
-     * @returns {number}
-     * @access protected
-     */
-
-
-    DBSCAN.prototype._euclideanDistance = function (p, q) {
-      var sum = 0;
-      var i = Math.min(p.length, q.length);
-
-      while (i--) {
-        sum += (p[i] - q[i]) * (p[i] - q[i]);
-      }
-
-      return Math.sqrt(sum);
-    };
-
-    if (module.exports) {
-      module.exports = DBSCAN;
-    }
-  })(DBSCAN);
-
-  var KMEANS = {exports: {}};
-
-  (function (module) {
-    /**
-     * KMEANS clustering
-     *
-     * @author Lukasz Krawczyk <contact@lukaszkrawczyk.eu>
-     * @copyright MIT
-     */
-
-    /**
-     * KMEANS class constructor
-     * @constructor
-     *
-     * @param {Array} dataset
-     * @param {number} k - number of clusters
-     * @param {function} distance - distance function
-     * @returns {KMEANS}
-     */
-    function KMEANS(dataset, k, distance) {
-      this.k = 3; // number of clusters
-
-      this.dataset = []; // set of feature vectors
-
-      this.assignments = []; // set of associated clusters for each feature vector
-
-      this.centroids = []; // vectors for our clusters
-
-      this.init(dataset, k, distance);
-    }
-    /**
-     * @returns {undefined}
-     */
-
-
-    KMEANS.prototype.init = function (dataset, k, distance) {
-      this.assignments = [];
-      this.centroids = [];
-
-      if (typeof dataset !== 'undefined') {
-        this.dataset = dataset;
-      }
-
-      if (typeof k !== 'undefined') {
-        this.k = k;
-      }
-
-      if (typeof distance !== 'undefined') {
-        this.distance = distance;
-      }
-    };
-    /**
-     * @returns {undefined}
-     */
-
-
-    KMEANS.prototype.run = function (dataset, k) {
-      this.init(dataset, k);
-      var len = this.dataset.length; // initialize centroids
-
-      for (var i = 0; i < this.k; i++) {
-        this.centroids[i] = this.randomCentroid();
-      }
-
-      var change = true;
-
-      while (change) {
-        // assign feature vectors to clusters
-        change = this.assign(); // adjust location of centroids
-
-        for (var centroidId = 0; centroidId < this.k; centroidId++) {
-          var mean = new Array(maxDim);
-          var count = 0; // init mean vector
-
-          for (var dim = 0; dim < maxDim; dim++) {
-            mean[dim] = 0;
-          }
-
-          for (var j = 0; j < len; j++) {
-            var maxDim = this.dataset[j].length; // if current cluster id is assigned to point
-
-            if (centroidId === this.assignments[j]) {
-              for (var dim = 0; dim < maxDim; dim++) {
-                mean[dim] += this.dataset[j][dim];
-              }
-
-              count++;
-            }
-          }
-
-          if (count > 0) {
-            // if cluster contain points, adjust centroid position
-            for (var dim = 0; dim < maxDim; dim++) {
-              mean[dim] /= count;
-            }
-
-            this.centroids[centroidId] = mean;
-          } else {
-            // if cluster is empty, generate new random centroid
-            this.centroids[centroidId] = this.randomCentroid();
-            change = true;
-          }
-        }
-      }
-
-      return this.getClusters();
-    };
-    /**
-     * Generate random centroid
-     *
-     * @returns {Array}
-     */
-
-
-    KMEANS.prototype.randomCentroid = function () {
-      var maxId = this.dataset.length - 1;
-      var centroid;
-      var id;
-
-      do {
-        id = Math.round(Math.random() * maxId);
-        centroid = this.dataset[id];
-      } while (this.centroids.indexOf(centroid) >= 0);
-
-      return centroid;
-    };
-    /**
-     * Assign points to clusters
-     *
-     * @returns {boolean}
-     */
-
-
-    KMEANS.prototype.assign = function () {
-      var change = false;
-      var len = this.dataset.length;
-      var closestCentroid;
-
-      for (var i = 0; i < len; i++) {
-        closestCentroid = this.argmin(this.dataset[i], this.centroids, this.distance);
-
-        if (closestCentroid != this.assignments[i]) {
-          this.assignments[i] = closestCentroid;
-          change = true;
-        }
-      }
-
-      return change;
-    };
-    /**
-     * Extract information about clusters
-     *
-     * @returns {undefined}
-     */
-
-
-    KMEANS.prototype.getClusters = function () {
-      var clusters = new Array(this.k);
-      var centroidId;
-
-      for (var pointId = 0; pointId < this.assignments.length; pointId++) {
-        centroidId = this.assignments[pointId]; // init empty cluster
-
-        if (typeof clusters[centroidId] === 'undefined') {
-          clusters[centroidId] = [];
-        }
-
-        clusters[centroidId].push(pointId);
-      }
-
-      return clusters;
-    }; // utils
-
-    /**
-     * @params {Array} point
-     * @params {Array.<Array>} set
-     * @params {Function} f
-     * @returns {number}
-     */
-
-
-    KMEANS.prototype.argmin = function (point, set, f) {
-      var min = Number.MAX_VALUE;
-      var arg = 0;
-      var len = set.length;
-      var d;
-
-      for (var i = 0; i < len; i++) {
-        d = f(point, set[i]);
-
-        if (d < min) {
-          min = d;
-          arg = i;
-        }
-      }
-
-      return arg;
-    };
-    /**
-     * Euclidean distance
-     *
-     * @params {number} p
-     * @params {number} q
-     * @returns {number}
-     */
-
-
-    KMEANS.prototype.distance = function (p, q) {
-      var sum = 0;
-      var i = Math.min(p.length, q.length);
-
-      while (i--) {
-        var diff = p[i] - q[i];
-        sum += diff * diff;
-      }
-
-      return Math.sqrt(sum);
-    };
-
-    if (module.exports) {
-      module.exports = KMEANS;
-    }
-  })(KMEANS);
-
-  var OPTICS = {exports: {}};
-
-  var PriorityQueue = {exports: {}};
-
-  /**
-   * PriorityQueue
-   * Elements in this queue are sorted according to their value
-   *
-   * @author Lukasz Krawczyk <contact@lukaszkrawczyk.eu>
-   * @copyright MIT
-   */
-
-  (function (module) {
-    /**
-     * PriorityQueue class construcotr
-     * @constructor
-     *
-     * @example
-     * queue: [1,2,3,4]
-     * priorities: [4,1,2,3]
-     * > result = [1,4,2,3]
-     *
-     * @param {Array} elements
-     * @param {Array} priorities
-     * @param {string} sorting - asc / desc
-     * @returns {PriorityQueue}
-     */
-    function PriorityQueue(elements, priorities, sorting) {
-      /** @type {Array} */
-      this._queue = [];
-      /** @type {Array} */
-
-      this._priorities = [];
-      /** @type {string} */
-
-      this._sorting = 'desc';
-
-      this._init(elements, priorities, sorting);
-    }
-    /**
-     * Insert element
-     *
-     * @param {Object} ele
-     * @param {Object} priority
-     * @returns {undefined}
-     * @access public
-     */
-
-    PriorityQueue.prototype.insert = function (ele, priority) {
-      var indexToInsert = this._queue.length;
-      var index = indexToInsert;
-
-      while (index--) {
-        var priority2 = this._priorities[index];
-
-        if (this._sorting === 'desc') {
-          if (priority > priority2) {
-            indexToInsert = index;
-          }
-        } else {
-          if (priority < priority2) {
-            indexToInsert = index;
-          }
-        }
-      }
-
-      this._insertAt(ele, priority, indexToInsert);
-    };
-    /**
-     * Remove element
-     *
-     * @param {Object} ele
-     * @returns {undefined}
-     * @access public
-     */
-
-
-    PriorityQueue.prototype.remove = function (ele) {
-      var index = this._queue.length;
-
-      while (index--) {
-        var ele2 = this._queue[index];
-
-        if (ele === ele2) {
-          this._queue.splice(index, 1);
-
-          this._priorities.splice(index, 1);
-
-          break;
-        }
-      }
-    };
-    /**
-     * For each loop wrapper
-     *
-     * @param {function} func
-     * @returs {undefined}
-     * @access public
-     */
-
-
-    PriorityQueue.prototype.forEach = function (func) {
-      this._queue.forEach(func);
-    };
-    /**
-     * @returns {Array}
-     * @access public
-     */
-
-
-    PriorityQueue.prototype.getElements = function () {
-      return this._queue;
-    };
-    /**
-     * @param {number} index
-     * @returns {Object}
-     * @access public
-     */
-
-
-    PriorityQueue.prototype.getElementPriority = function (index) {
-      return this._priorities[index];
-    };
-    /**
-     * @returns {Array}
-     * @access public
-     */
-
-
-    PriorityQueue.prototype.getPriorities = function () {
-      return this._priorities;
-    };
-    /**
-     * @returns {Array}
-     * @access public
-     */
-
-
-    PriorityQueue.prototype.getElementsWithPriorities = function () {
-      var result = [];
-
-      for (var i = 0, l = this._queue.length; i < l; i++) {
-        result.push([this._queue[i], this._priorities[i]]);
-      }
-
-      return result;
-    };
-    /**
-     * Set object properties
-     *
-     * @param {Array} elements
-     * @param {Array} priorities
-     * @returns {undefined}
-     * @access protected
-     */
-
-
-    PriorityQueue.prototype._init = function (elements, priorities, sorting) {
-      if (elements && priorities) {
-        this._queue = [];
-        this._priorities = [];
-
-        if (elements.length !== priorities.length) {
-          throw new Error('Arrays must have the same length');
-        }
-
-        for (var i = 0; i < elements.length; i++) {
-          this.insert(elements[i], priorities[i]);
-        }
-      }
-
-      if (sorting) {
-        this._sorting = sorting;
-      }
-    };
-    /**
-     * Insert element at given position
-     *
-     * @param {Object} ele
-     * @param {number} index
-     * @returns {undefined}
-     * @access protected
-     */
-
-
-    PriorityQueue.prototype._insertAt = function (ele, priority, index) {
-      if (this._queue.length === index) {
-        this._queue.push(ele);
-
-        this._priorities.push(priority);
-      } else {
-        this._queue.splice(index, 0, ele);
-
-        this._priorities.splice(index, 0, priority);
-      }
-    };
-
-    if (module.exports) {
-      module.exports = PriorityQueue;
-    }
-  })(PriorityQueue);
-
-  (function (module) {
-    /**
-     * @requires ./PriorityQueue.js
-     */
-    if (module.exports) {
-      var PriorityQueue$1 = PriorityQueue.exports;
-    }
-    /**
-     * OPTICS - Ordering points to identify the clustering structure
-     *
-     * @author Lukasz Krawczyk <contact@lukaszkrawczyk.eu>
-     * @copyright MIT
-     */
-
-    /**
-     * OPTICS class constructor
-     * @constructor
-     *
-     * @param {Array} dataset
-     * @param {number} epsilon
-     * @param {number} minPts
-     * @param {function} distanceFunction
-     * @returns {OPTICS}
-     */
-
-
-    function OPTICS(dataset, epsilon, minPts, distanceFunction) {
-      /** @type {number} */
-      this.epsilon = 1;
-      /** @type {number} */
-
-      this.minPts = 1;
-      /** @type {function} */
-
-      this.distance = this._euclideanDistance; // temporary variables used during computation
-
-      /** @type {Array} */
-
-      this._reachability = [];
-      /** @type {Array} */
-
-      this._processed = [];
-      /** @type {number} */
-
-      this._coreDistance = 0;
-      /** @type {Array} */
-
-      this._orderedList = [];
-
-      this._init(dataset, epsilon, minPts, distanceFunction);
-    }
-    /******************************************************************************/
-    // pulic functions
-
-    /**
-     * Start clustering
-     *
-     * @param {Array} dataset
-     * @returns {undefined}
-     * @access public
-     */
-
-
-    OPTICS.prototype.run = function (dataset, epsilon, minPts, distanceFunction) {
-      this._init(dataset, epsilon, minPts, distanceFunction);
-
-      for (var pointId = 0, l = this.dataset.length; pointId < l; pointId++) {
-        if (this._processed[pointId] !== 1) {
-          this._processed[pointId] = 1;
-          this.clusters.push([pointId]);
-          var clusterId = this.clusters.length - 1;
-
-          this._orderedList.push(pointId);
-
-          var priorityQueue = new PriorityQueue$1(null, null, 'asc');
-
-          var neighbors = this._regionQuery(pointId); // using priority queue assign elements to new cluster
-
-
-          if (this._distanceToCore(pointId) !== undefined) {
-            this._updateQueue(pointId, neighbors, priorityQueue);
-
-            this._expandCluster(clusterId, priorityQueue);
-          }
-        }
-      }
-
-      return this.clusters;
-    };
-    /**
-     * Generate reachability plot for all points
-     *
-     * @returns {array}
-     * @access public
-     */
-
-
-    OPTICS.prototype.getReachabilityPlot = function () {
-      var reachabilityPlot = [];
-
-      for (var i = 0, l = this._orderedList.length; i < l; i++) {
-        var pointId = this._orderedList[i];
-        var distance = this._reachability[pointId];
-        reachabilityPlot.push([pointId, distance]);
-      }
-
-      return reachabilityPlot;
-    };
-    /******************************************************************************/
-    // protected functions
-
-    /**
-     * Set object properties
-     *
-     * @param {Array} dataset
-     * @param {number} epsilon
-     * @param {number} minPts
-     * @param {function} distance
-     * @returns {undefined}
-     * @access protected
-     */
-
-
-    OPTICS.prototype._init = function (dataset, epsilon, minPts, distance) {
-      if (dataset) {
-        if (!(dataset instanceof Array)) {
-          throw Error('Dataset must be of type array, ' + typeof dataset + ' given');
-        }
-
-        this.dataset = dataset;
-        this.clusters = [];
-        this._reachability = new Array(this.dataset.length);
-        this._processed = new Array(this.dataset.length);
-        this._coreDistance = 0;
-        this._orderedList = [];
-      }
-
-      if (epsilon) {
-        this.epsilon = epsilon;
-      }
-
-      if (minPts) {
-        this.minPts = minPts;
-      }
-
-      if (distance) {
-        this.distance = distance;
-      }
-    };
-    /**
-     * Update information in queue
-     *
-     * @param {number} pointId
-     * @param {Array} neighbors
-     * @param {PriorityQueue} queue
-     * @returns {undefined}
-     * @access protected
-     */
-
-
-    OPTICS.prototype._updateQueue = function (pointId, neighbors, queue) {
-      var self = this;
-      this._coreDistance = this._distanceToCore(pointId);
-      neighbors.forEach(function (pointId2) {
-        if (self._processed[pointId2] === undefined) {
-          var dist = self.distance(self.dataset[pointId], self.dataset[pointId2]);
-          var newReachableDistance = Math.max(self._coreDistance, dist);
-
-          if (self._reachability[pointId2] === undefined) {
-            self._reachability[pointId2] = newReachableDistance;
-            queue.insert(pointId2, newReachableDistance);
-          } else {
-            if (newReachableDistance < self._reachability[pointId2]) {
-              self._reachability[pointId2] = newReachableDistance;
-              queue.remove(pointId2);
-              queue.insert(pointId2, newReachableDistance);
-            }
-          }
-        }
-      });
-    };
-    /**
-     * Expand cluster
-     *
-     * @param {number} clusterId
-     * @param {PriorityQueue} queue
-     * @returns {undefined}
-     * @access protected
-     */
-
-
-    OPTICS.prototype._expandCluster = function (clusterId, queue) {
-      var queueElements = queue.getElements();
-
-      for (var p = 0, l = queueElements.length; p < l; p++) {
-        var pointId = queueElements[p];
-
-        if (this._processed[pointId] === undefined) {
-          var neighbors = this._regionQuery(pointId);
-
-          this._processed[pointId] = 1;
-          this.clusters[clusterId].push(pointId);
-
-          this._orderedList.push(pointId);
-
-          if (this._distanceToCore(pointId) !== undefined) {
-            this._updateQueue(pointId, neighbors, queue);
-
-            this._expandCluster(clusterId, queue);
-          }
-        }
-      }
-    };
-    /**
-     * Calculating distance to cluster core
-     *
-     * @param {number} pointId
-     * @returns {number}
-     * @access protected
-     */
-
-
-    OPTICS.prototype._distanceToCore = function (pointId) {
-      var l = this.epsilon;
-
-      for (var coreDistCand = 0; coreDistCand < l; coreDistCand++) {
-        var neighbors = this._regionQuery(pointId, coreDistCand);
-
-        if (neighbors.length >= this.minPts) {
-          return coreDistCand;
-        }
-      }
-
-      return;
-    };
-    /**
-     * Find all neighbors around given point
-     *
-     * @param {number} pointId
-     * @param {number} epsilon
-     * @returns {Array}
-     * @access protected
-     */
-
-
-    OPTICS.prototype._regionQuery = function (pointId, epsilon) {
-      epsilon = epsilon || this.epsilon;
-      var neighbors = [];
-
-      for (var id = 0, l = this.dataset.length; id < l; id++) {
-        if (this.distance(this.dataset[pointId], this.dataset[id]) < epsilon) {
-          neighbors.push(id);
-        }
-      }
-
-      return neighbors;
-    };
-    /******************************************************************************/
-    // helpers
-
-    /**
-     * Calculate euclidean distance in multidimensional space
-     *
-     * @param {Array} p
-     * @param {Array} q
-     * @returns {number}
-     * @access protected
-     */
-
-
-    OPTICS.prototype._euclideanDistance = function (p, q) {
-      var sum = 0;
-      var i = Math.min(p.length, q.length);
-
-      while (i--) {
-        sum += (p[i] - q[i]) * (p[i] - q[i]);
-      }
-
-      return Math.sqrt(sum);
-    };
-
-    if (module.exports) {
-      module.exports = OPTICS;
-    }
-  })(OPTICS);
-
-  (function (module) {
-    if (module.exports) {
-      module.exports = {
-        DBSCAN: DBSCAN.exports,
-        KMEANS: KMEANS.exports,
-        OPTICS: OPTICS.exports,
-        PriorityQueue: PriorityQueue.exports
-      };
-    }
-  })(lib);
-
-  var clustering = lib.exports;
-
-  /**
-   * Takes a set of {@link Point|points} and partition them into clusters according to {@link DBSCAN's|https://en.wikipedia.org/wiki/DBSCAN} data clustering algorithm.
-   *
-   * @name clustersDbscan
-   * @param {FeatureCollection<Point>} points to be clustered
-   * @param {number} maxDistance Maximum Distance between any point of the cluster to generate the clusters (kilometers only)
-   * @param {Object} [options={}] Optional parameters
-   * @param {string} [options.units="kilometers"] in which `maxDistance` is expressed, can be degrees, radians, miles, or kilometers
-   * @param {boolean} [options.mutate=false] Allows GeoJSON input to be mutated
-   * @param {number} [options.minPoints=3] Minimum number of points to generate a single cluster,
-   * points which do not meet this requirement will be classified as an 'edge' or 'noise'.
-   * @returns {FeatureCollection<Point>} Clustered Points with an additional two properties associated to each Feature:
-   * - {number} cluster - the associated clusterId
-   * - {string} dbscan - type of point it has been classified as ('core'|'edge'|'noise')
-   * @example
-   * // create random points with random z-values in their properties
-   * var points = turf.randomPoint(100, {bbox: [0, 30, 20, 50]});
-   * var maxDistance = 100;
-   * var clustered = turf.clustersDbscan(points, maxDistance);
-   *
-   * //addToMap
-   * var addToMap = [clustered];
-   */
-
-  function clustersDbscan(points, maxDistance, options) {
-    // Input validation being handled by Typescript
-    // collectionOf(points, 'Point', 'points must consist of a FeatureCollection of only Points');
-    // if (maxDistance === null || maxDistance === undefined) throw new Error('maxDistance is required');
-    // if (!(Math.sign(maxDistance) > 0)) throw new Error('maxDistance is invalid');
-    // if (!(minPoints === undefined || minPoints === null || Math.sign(minPoints) > 0)) throw new Error('options.minPoints is invalid');
-    if (options === void 0) {
-      options = {};
-    } // Clone points to prevent any mutations
-
-
-    if (options.mutate !== true) points = clone(points); // Defaults
-
-    options.minPoints = options.minPoints || 3; // create clustered ids
-
-    var dbscan = new clustering.DBSCAN();
-    var clusteredIds = dbscan.run(coordAll(points), convertLength(maxDistance, options.units), options.minPoints, distance); // Tag points to Clusters ID
-
-    var clusterId = -1;
-    clusteredIds.forEach(function (clusterIds) {
-      clusterId++; // assign cluster ids to input points
-
-      clusterIds.forEach(function (idx) {
-        var clusterPoint = points.features[idx];
-        if (!clusterPoint.properties) clusterPoint.properties = {};
-        clusterPoint.properties.cluster = clusterId;
-        clusterPoint.properties.dbscan = "core";
-      });
-    }); // handle noise points, if any
-    // edges points are tagged by DBSCAN as both 'noise' and 'cluster' as they can "reach" less than 'minPoints' number of points
-
-    dbscan.noise.forEach(function (noiseId) {
-      var noisePoint = points.features[noiseId];
-      if (!noisePoint.properties) noisePoint.properties = {};
-      if (noisePoint.properties.cluster) noisePoint.properties.dbscan = "edge";else noisePoint.properties.dbscan = "noise";
-    });
-    return points;
-  }
-
-  var DEFAULT_INTERNAL_DBSCAN_OPTION = {
-    units: "kilometers",
-    mutate: false,
-    minPoints: 1
-  };
-  /**
-   *
-   * **This algorithm is not yet ready for use!**
-   *
-   * Experimental algorithm using DBScan.
-   *
-   * The Grid algorithm does not implement caching and markers may flash as the
-   * viewport changes. Instead use {@link SuperClusterAlgorithm}.
-   *
-   * @see https://www.npmjs.com/package/@turf/clusters-dbscan
-   */
-
-  var DBScanAlgorithm = /*#__PURE__*/function (_AbstractViewportAlgo) {
-    _inherits(DBScanAlgorithm, _AbstractViewportAlgo);
-
-    var _super = _createSuper(DBScanAlgorithm);
-
-    function DBScanAlgorithm(_a) {
-      var _this;
-
-      _classCallCheck(this, DBScanAlgorithm);
-
-      var _a$maxDistance = _a.maxDistance,
-          maxDistance = _a$maxDistance === void 0 ? 200 : _a$maxDistance,
-          _a$minPoints = _a.minPoints,
-          minPoints = _a$minPoints === void 0 ? DEFAULT_INTERNAL_DBSCAN_OPTION.minPoints : _a$minPoints,
-          options = __rest(_a, ["maxDistance", "minPoints"]);
-
-      _this = _super.call(this, options);
-      _this.maxDistance = maxDistance;
-      _this.options = Object.assign(Object.assign({}, DEFAULT_INTERNAL_DBSCAN_OPTION), {
-        minPoints: minPoints
-      });
-      return _this;
-    }
-
-    _createClass(DBScanAlgorithm, [{
-      key: "cluster",
-      value: function cluster(_ref) {
-        var markers = _ref.markers,
-            mapCanvasProjection = _ref.mapCanvasProjection;
-        var points = featureCollection(markers.map(function (marker) {
-          var projectedPoint = mapCanvasProjection.fromLatLngToContainerPixel(marker.getPosition());
-          return point([projectedPoint.x, projectedPoint.y]);
-        }));
-        var grouped = [];
-        clustersDbscan(points, this.maxDistance, this.options).features.forEach(function (point, i) {
-          if (!grouped[point.properties.cluster]) {
-            grouped[point.properties.cluster] = [];
-          }
-
-          grouped[point.properties.cluster].push(markers[i]);
-        });
-        return grouped.map(function (markers) {
-          return new Cluster({
-            markers: markers
-          });
-        });
-      }
-    }]);
-
-    return DBScanAlgorithm;
-  }(AbstractViewportAlgorithm);
 
   var kdbush = {exports: {}};
 
@@ -4853,7 +2689,7 @@ var markerClusterer = (function (exports) {
     }
 
     _limitZoom(z) {
-      return Math.max(this.options.minZoom, Math.min(+z, this.options.maxZoom + 1));
+      return Math.max(this.options.minZoom, Math.min(Math.floor(+z), this.options.maxZoom + 1));
     }
 
     _cluster(points, zoom) {
@@ -5039,70 +2875,6 @@ var markerClusterer = (function (exports) {
     return p.y;
   }
 
-  var es6 = function equal(a, b) {
-    if (a === b) return true;
-
-    if (a && b && typeof a == 'object' && typeof b == 'object') {
-      if (a.constructor !== b.constructor) return false;
-      var length, i, keys;
-
-      if (Array.isArray(a)) {
-        length = a.length;
-        if (length != b.length) return false;
-
-        for (i = length; i-- !== 0;) if (!equal(a[i], b[i])) return false;
-
-        return true;
-      }
-
-      if (a instanceof Map && b instanceof Map) {
-        if (a.size !== b.size) return false;
-
-        for (i of a.entries()) if (!b.has(i[0])) return false;
-
-        for (i of a.entries()) if (!equal(i[1], b.get(i[0]))) return false;
-
-        return true;
-      }
-
-      if (a instanceof Set && b instanceof Set) {
-        if (a.size !== b.size) return false;
-
-        for (i of a.entries()) if (!b.has(i[0])) return false;
-
-        return true;
-      }
-
-      if (ArrayBuffer.isView(a) && ArrayBuffer.isView(b)) {
-        length = a.length;
-        if (length != b.length) return false;
-
-        for (i = length; i-- !== 0;) if (a[i] !== b[i]) return false;
-
-        return true;
-      }
-
-      if (a.constructor === RegExp) return a.source === b.source && a.flags === b.flags;
-      if (a.valueOf !== Object.prototype.valueOf) return a.valueOf() === b.valueOf();
-      if (a.toString !== Object.prototype.toString) return a.toString() === b.toString();
-      keys = Object.keys(a);
-      length = keys.length;
-      if (length !== Object.keys(b).length) return false;
-
-      for (i = length; i-- !== 0;) if (!Object.prototype.hasOwnProperty.call(b, keys[i])) return false;
-
-      for (i = length; i-- !== 0;) {
-        var key = keys[i];
-        if (!equal(a[key], b[key])) return false;
-      }
-
-      return true;
-    } // true if both NaN, false otherwise
-
-
-    return a !== a && b !== b;
-  };
-
   /**
    * A very fast JavaScript algorithm for geospatial point clustering using KD trees.
    *
@@ -5142,7 +2914,7 @@ var markerClusterer = (function (exports) {
       value: function calculate(input) {
         var changed = false;
 
-        if (!es6(input.markers, this.markers)) {
+        if (!fastDeepEqual(input.markers, this.markers)) {
           changed = true; // TODO use proxy to avoid copy?
 
           this.markers = _toConsumableArray(input.markers);
@@ -5167,7 +2939,7 @@ var markerClusterer = (function (exports) {
 
         if (!changed) {
           if (this.state.zoom > this.maxZoom && state.zoom > this.maxZoom) ; else {
-            changed = changed || !es6(this.state, state);
+            changed = changed || !fastDeepEqual(this.state, state);
           }
         }
 
@@ -5223,12 +2995,12 @@ var markerClusterer = (function (exports) {
 
   var DESCRIPTORS$1 = descriptors;
   var V8_PROTOTYPE_DEFINE_BUG = v8PrototypeDefineBug;
-  var definePropertyModule$2 = objectDefineProperty;
+  var definePropertyModule$1 = objectDefineProperty;
   var anObject$2 = anObject$5;
   var toIndexedObject = toIndexedObject$4;
   var objectKeys = objectKeys$2; // `Object.defineProperties` method
   // https://tc39.es/ecma262/#sec-object.defineproperties
-  // eslint-disable-next-line es/no-object-defineproperties -- safe
+  // eslint-disable-next-line es-x/no-object-defineproperties -- safe
 
   objectDefineProperties.f = DESCRIPTORS$1 && !V8_PROTOTYPE_DEFINE_BUG ? Object.defineProperties : function defineProperties(O, Properties) {
     anObject$2(O);
@@ -5238,7 +3010,7 @@ var markerClusterer = (function (exports) {
     var index = 0;
     var key;
 
-    while (length > index) definePropertyModule$2.f(O, key = keys[index++], props[key]);
+    while (length > index) definePropertyModule$1.f(O, key = keys[index++], props[key]);
 
     return O;
   };
@@ -5321,6 +3093,7 @@ var markerClusterer = (function (exports) {
 
   hiddenKeys[IE_PROTO] = true; // `Object.create` method
   // https://tc39.es/ecma262/#sec-object.create
+  // eslint-disable-next-line es-x/no-object-create -- safe
 
   var objectCreate = Object.create || function create(O, Properties) {
     var result;
@@ -5338,13 +3111,13 @@ var markerClusterer = (function (exports) {
 
   var wellKnownSymbol$2 = wellKnownSymbol$8;
   var create = objectCreate;
-  var definePropertyModule$1 = objectDefineProperty;
+  var defineProperty$1 = objectDefineProperty.f;
   var UNSCOPABLES = wellKnownSymbol$2('unscopables');
   var ArrayPrototype = Array.prototype; // Array.prototype[@@unscopables]
   // https://tc39.es/ecma262/#sec-array.prototype-@@unscopables
 
   if (ArrayPrototype[UNSCOPABLES] == undefined) {
-    definePropertyModule$1.f(ArrayPrototype, UNSCOPABLES, {
+    defineProperty$1(ArrayPrototype, UNSCOPABLES, {
       configurable: true,
       value: create(null)
     });
@@ -5357,12 +3130,18 @@ var markerClusterer = (function (exports) {
 
   var $$3 = _export;
   var $includes = arrayIncludes.includes;
-  var addToUnscopables = addToUnscopables$1; // `Array.prototype.includes` method
+  var fails$1 = fails$e;
+  var addToUnscopables = addToUnscopables$1; // FF99+ bug
+
+  var BROKEN_ON_SPARSE = fails$1(function () {
+    return !Array(1).includes();
+  }); // `Array.prototype.includes` method
   // https://tc39.es/ecma262/#sec-array.prototype.includes
 
   $$3({
     target: 'Array',
-    proto: true
+    proto: true,
+    forced: BROKEN_ON_SPARSE
   }, {
     includes: function includes(el
     /* , fromIndex = 0 */
@@ -5384,25 +3163,23 @@ var markerClusterer = (function (exports) {
     return isObject$1(it) && ((isRegExp = it[MATCH$1]) !== undefined ? !!isRegExp : classof$1(it) == 'RegExp');
   };
 
-  var global$5 = global$v;
   var isRegExp = isRegexp;
-  var TypeError$4 = global$5.TypeError;
+  var $TypeError$3 = TypeError;
 
   var notARegexp = function (it) {
     if (isRegExp(it)) {
-      throw TypeError$4("The method doesn't accept regular expressions");
+      throw $TypeError$3("The method doesn't accept regular expressions");
     }
 
     return it;
   };
 
-  var global$4 = global$v;
   var classof = classof$5;
-  var String$2 = global$4.String;
+  var $String$1 = String;
 
   var toString$2 = function (argument) {
     if (classof(argument) === 'Symbol') throw TypeError('Cannot convert a Symbol value to a string');
-    return String$2(argument);
+    return $String$1(argument);
   };
 
   var wellKnownSymbol = wellKnownSymbol$8;
@@ -5446,7 +3223,7 @@ var markerClusterer = (function (exports) {
     }
   });
 
-  /* eslint-disable es/no-array-prototype-indexof -- required for testing */
+  /* eslint-disable es-x/no-array-prototype-indexof -- required for testing */
 
 
   var $$1 = _export;
@@ -5472,6 +3249,14 @@ var markerClusterer = (function (exports) {
     }
   });
 
+  var $TypeError$2 = TypeError;
+  var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF; // 2 ** 53 - 1 == 9007199254740991
+
+  var doesNotExceedSafeInteger$1 = function (it) {
+    if (it > MAX_SAFE_INTEGER) throw $TypeError$2('Maximum allowed index exceeded');
+    return it;
+  };
+
   var toPropertyKey = toPropertyKey$3;
   var definePropertyModule = objectDefineProperty;
   var createPropertyDescriptor = createPropertyDescriptor$3;
@@ -5481,21 +3266,26 @@ var markerClusterer = (function (exports) {
     if (propertyKey in object) definePropertyModule.f(object, propertyKey, createPropertyDescriptor(0, value));else object[propertyKey] = value;
   };
 
+  var tryToString = tryToString$2;
+  var $TypeError$1 = TypeError;
+
+  var deletePropertyOrThrow$1 = function (O, P) {
+    if (!delete O[P]) throw $TypeError$1('Cannot delete property ' + tryToString(P) + ' of ' + tryToString(O));
+  };
+
   var $ = _export;
-  var global$3 = global$v;
+  var toObject = toObject$5;
   var toAbsoluteIndex = toAbsoluteIndex$2;
   var toIntegerOrInfinity = toIntegerOrInfinity$3;
   var lengthOfArrayLike = lengthOfArrayLike$4;
-  var toObject = toObject$5;
+  var doesNotExceedSafeInteger = doesNotExceedSafeInteger$1;
   var arraySpeciesCreate = arraySpeciesCreate$2;
   var createProperty = createProperty$1;
+  var deletePropertyOrThrow = deletePropertyOrThrow$1;
   var arrayMethodHasSpeciesSupport = arrayMethodHasSpeciesSupport$3;
   var HAS_SPECIES_SUPPORT = arrayMethodHasSpeciesSupport('splice');
-  var TypeError$3 = global$3.TypeError;
   var max = Math.max;
-  var min = Math.min;
-  var MAX_SAFE_INTEGER = 0x1FFFFFFFFFFFFF;
-  var MAXIMUM_ALLOWED_LENGTH_EXCEEDED = 'Maximum allowed length exceeded'; // `Array.prototype.splice` method
+  var min = Math.min; // `Array.prototype.splice` method
   // https://tc39.es/ecma262/#sec-array.prototype.splice
   // with adding support of @@species
 
@@ -5523,10 +3313,7 @@ var markerClusterer = (function (exports) {
         actualDeleteCount = min(max(toIntegerOrInfinity(deleteCount), 0), len - actualStart);
       }
 
-      if (len + insertCount - actualDeleteCount > MAX_SAFE_INTEGER) {
-        throw TypeError$3(MAXIMUM_ALLOWED_LENGTH_EXCEEDED);
-      }
-
+      doesNotExceedSafeInteger(len + insertCount - actualDeleteCount);
       A = arraySpeciesCreate(O, actualDeleteCount);
 
       for (k = 0; k < actualDeleteCount; k++) {
@@ -5540,15 +3327,15 @@ var markerClusterer = (function (exports) {
         for (k = actualStart; k < len - actualDeleteCount; k++) {
           from = k + actualDeleteCount;
           to = k + insertCount;
-          if (from in O) O[to] = O[from];else delete O[to];
+          if (from in O) O[to] = O[from];else deletePropertyOrThrow(O, to);
         }
 
-        for (k = len; k > len - actualDeleteCount + insertCount; k--) delete O[k - 1];
+        for (k = len; k > len - actualDeleteCount + insertCount; k--) deletePropertyOrThrow(O, k - 1);
       } else if (insertCount > actualDeleteCount) {
         for (k = len - actualDeleteCount; k > actualStart; k--) {
           from = k + actualDeleteCount - 1;
           to = k + insertCount - 1;
-          if (from in O) O[to] = O[from];else delete O[to];
+          if (from in O) O[to] = O[from];else deletePropertyOrThrow(O, to);
         }
       }
 
@@ -5561,14 +3348,13 @@ var markerClusterer = (function (exports) {
     }
   });
 
-  var global$2 = global$v;
-  var isCallable$1 = isCallable$d;
-  var String$1 = global$2.String;
-  var TypeError$2 = global$2.TypeError;
+  var isCallable$1 = isCallable$e;
+  var $String = String;
+  var $TypeError = TypeError;
 
   var aPossiblePrototype$1 = function (argument) {
     if (typeof argument == 'object' || isCallable$1(argument)) return argument;
-    throw TypeError$2("Can't set " + String$1(argument) + ' as a prototype');
+    throw $TypeError("Can't set " + $String(argument) + ' as a prototype');
   };
 
   /* eslint-disable no-proto -- safe */
@@ -5577,7 +3363,7 @@ var markerClusterer = (function (exports) {
   var aPossiblePrototype = aPossiblePrototype$1; // `Object.setPrototypeOf` method
   // https://tc39.es/ecma262/#sec-object.setprototypeof
   // Works with __proto__ only. Old v8 can't work with null proto objects.
-  // eslint-disable-next-line es/no-object-setprototypeof -- safe
+  // eslint-disable-next-line es-x/no-object-setprototypeof -- safe
 
   var objectSetPrototypeOf = Object.setPrototypeOf || ('__proto__' in {} ? function () {
     var CORRECT_SETTER = false;
@@ -5585,7 +3371,7 @@ var markerClusterer = (function (exports) {
     var setter;
 
     try {
-      // eslint-disable-next-line es/no-object-getownpropertydescriptor -- safe
+      // eslint-disable-next-line es-x/no-object-getownpropertydescriptor -- safe
       setter = uncurryThis$3(Object.getOwnPropertyDescriptor(Object.prototype, '__proto__').set);
       setter(test, []);
       CORRECT_SETTER = test instanceof Array;
@@ -5601,7 +3387,7 @@ var markerClusterer = (function (exports) {
     };
   }() : undefined);
 
-  var isCallable = isCallable$d;
+  var isCallable = isCallable$e;
   var isObject = isObject$8;
   var setPrototypeOf = objectSetPrototypeOf; // makes subclassing work correct for wrapped built-ins
 
@@ -5651,16 +3437,16 @@ var markerClusterer = (function (exports) {
   };
 
   var DESCRIPTORS = descriptors;
-  var global$1 = global$v;
+  var global$1 = global$d;
   var uncurryThis = functionUncurryThis;
   var isForced = isForced_1;
-  var redefine = redefine$3.exports;
+  var defineBuiltIn = defineBuiltIn$3;
   var hasOwn = hasOwnProperty_1;
   var inheritIfRequired = inheritIfRequired$1;
   var isPrototypeOf = objectIsPrototypeOf;
   var isSymbol = isSymbol$3;
   var toPrimitive = toPrimitive$2;
-  var fails = fails$c;
+  var fails = fails$e;
   var getOwnPropertyNames = objectGetOwnPropertyNames.f;
   var getOwnPropertyDescriptor = objectGetOwnPropertyDescriptor.f;
   var defineProperty = objectDefineProperty.f;
@@ -5753,7 +3539,9 @@ var markerClusterer = (function (exports) {
 
     NumberWrapper.prototype = NumberPrototype;
     NumberPrototype.constructor = NumberWrapper;
-    redefine(global$1, NUMBER, NumberWrapper);
+    defineBuiltIn(global$1, NUMBER, NumberWrapper, {
+      constructor: true
+    });
   }
 
   /**
@@ -6132,10 +3920,8 @@ var markerClusterer = (function (exports) {
   exports.AbstractViewportAlgorithm = AbstractViewportAlgorithm;
   exports.Cluster = Cluster;
   exports.ClusterStats = ClusterStats;
-  exports.DBScanAlgorithm = DBScanAlgorithm;
   exports.DefaultRenderer = DefaultRenderer;
   exports.GridAlgorithm = GridAlgorithm;
-  exports.KmeansAlgorithm = KmeansAlgorithm;
   exports.MarkerClusterer = MarkerClusterer;
   exports.NoopAlgorithm = NoopAlgorithm;
   exports.SuperClusterAlgorithm = SuperClusterAlgorithm;
