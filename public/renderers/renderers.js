@@ -272,14 +272,20 @@ class DefaultRenderer {
      */
     render({ count, position }, stats) {
         // change color if this cluster has more markers than the mean cluster
-        const color = count > Math.max(10, stats.clusters.markers.mean) ? "#ff0000" : "#0000ff";
-        // create svg url with fill color
-        const svg = window.btoa(`
-  <svg fill="${color}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240">
-    <circle cx="120" cy="120" opacity=".6" r="70" />
-    <circle cx="120" cy="120" opacity=".3" r="90" />
-    <circle cx="120" cy="120" opacity=".2" r="110" />
-  </svg>`);
+        let color;
+        // change color if cluster is top 5%, 10%, 25%, 50%
+        if (count >= stats.clusters.markers.max * 0.95)
+            color = "#AA0000";
+        else if (count >= stats.clusters.markers.max * 0.90)
+            color = "#D40808";
+        else if (count >= stats.clusters.markers.max * 0.75)
+            color = "#FA1E0E";
+        else if (count >= stats.clusters.markers.max * 0.50) {
+            color = "#e99100";
+        }
+        else
+            color = "#FFBE0F";
+        var svg = window.btoa("\n  <svg fill=\"".concat(color, "\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 240 240\">\n    <circle cx=\"120\" cy=\"120\" opacity=\".6\" r=\"70\" />\n    <circle cx=\"120\" cy=\"120\" opacity=\".3\" r=\"90\" />\n    <circle cx=\"120\" cy=\"120\" opacity=\".2\" r=\"110\" />\n  </svg>")); // create marker using svg icon
         // create marker using svg icon
         return new google.maps.Marker({
             position,
